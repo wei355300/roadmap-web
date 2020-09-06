@@ -1,0 +1,49 @@
+@import '../../../../theme.less';
+
+@userInfoHeight: 60px;
+
+.task-queue {
+  &__container {
+    flex: 0 0 250px;
+    height: 100%;
+    margin-right: 16px;
+    overflow: hidden;
+    // background: #fff;
+    border: 1px solid #d0d0d0;
+    border-radius: 5px;
+  }
+
+  &__drag-drop {
+    &-container {
+      max-height: calc(~"100% - @{userInfoHeight}");
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    &-context {
+    }
+  }
+}
+
+.user-info {
+  &__container {
+    width: 100%;
+    height: @userInfoHeight;
+    padding: 8px;
+    background: #f8f8f8;
+    border-radius: 5px 5px 0 0;
+  }
+}
+
+.task-card {
+  &__outter {
+    margin: 8px;
+  }
+
+  &__container {
+    // width: 100%;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid;
+  }
+}
