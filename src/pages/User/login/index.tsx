@@ -1,16 +1,18 @@
 import {
+  AlipayCircleOutlined,
   LockOutlined,
+  MobileOutlined,
+  TaobaoCircleOutlined,
   UserOutlined,
+  WeiboCircleOutlined,
 } from '@ant-design/icons';
-import { Alert, message, Tabs } from 'antd';
+import { Alert, Space, message, Tabs } from 'antd';
 import React, { useState } from 'react';
-import ProForm, { ProFormText } from '@ant-design/pro-form';
-import { useIntl, Link, history, useModel } from 'umi';
+import ProForm, { ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
+import { Link, history } from 'umi';
 import Footer from '@/components/Footer';
-// import { login } from '@/services/ant-design-pro/api';
-// import { login } from './service';
-import { LoginParams, LoginResult,  login } from './model';
-// import { CurrentUser }  from '@/pages/User/model';
+import { login } from '@/services/ant-design-pro/api';
+import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import styles from './index.less';
 
 const LoginMessage: React.FC<{
@@ -25,74 +27,64 @@ const LoginMessage: React.FC<{
     showIcon
   />
 );
-/** 此方法会跳转到 redirect 参数所在的位置 */
-
-const goto = () => {
-  if (!history) return;
-  setTimeout(() => {
-    const { query } = history.location;
-    const { redirect } = query as {
-      redirect: string;
-    };
-    history.push(redirect || '/');
-  }, 10);
-};
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
-  const [userLoginState, setUserLoginState] = useState<LoginResult>({});
-  // const [type, setType] = useState<string>('account');
-  const { initialState, setInitialState } = useModel('@@initialState');
-  const intl = useIntl();
+  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
+  const [type, setType] = useState<string>('account');
+  // const { initialState, setInitialState } = useModel('@@initialState');
 
   const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
+    // const userInfo = {};// && await initialState?.fetchUserInfo?.();
 
-    if (userInfo) {
-      setInitialState({ ...initialState, currentUser: userInfo });
-    }
+    // if (userInfo) {
+    //   await setInitialState((s) => ({ ...s, currentUser: userInfo }));
+    // }
   };
 
-  const updateToken = (token: string) => {
-    localStorage.setItem('Token', token || "");
-  }
-
-  const handleSubmit = async (values: LoginParams) => {
+  const handleSubmit = async (values: API.LoginParams) => {
     setSubmitting(true);
 
     try {
       // 登录
-      const msg = await login({ ...values });
+      const msg = await login({ ...values, type });
 
-      if (msg.success) {
-        message.success('登录成功！');
-        updateToken(msg.data?.token || "");
+      if (msg.status === 'ok') {
+        const defaultLoginSuccessMessage = '登录成功！';
+        message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
-        goto();
+        /** 此方法会跳转到 redirect 参数所在的位置 */
+
+        if (!history) return;
+        const { query } = history.location;
+        const { redirect } = query as {
+          redirect: string;
+        };
+        history.push(redirect || '/');
         return;
       } // 如果失败去设置用户错误信息
 
       setUserLoginState(msg);
     } catch (error) {
-      message.error('登录失败，请重试！');
+      const defaultLoginFailureMessage = '登录失败，请重试！';
+      message.error(defaultLoginFailureMessage);
     }
 
     setSubmitting(false);
   };
 
-  const { success, errorCode, errorMessage } = userLoginState;
+  const { status, type: loginType } = userLoginState;
   return (
     <div className={styles.container}>
-      {/* <div className={styles.lang}>{SelectLang && <SelectLang />}</div> */}
       <div className={styles.content}>
         <div className={styles.top}>
           <div className={styles.header}>
             <Link to="/">
               <img alt="logo" className={styles.logo} src="/logo.svg" />
-              <span className={styles.title}>会话管理系统</span>
+              <span className={styles.title}>Ant Design</span>
             </Link>
           </div>
-          <div className={styles.desc}></div>
+          <div className={styles.desc}>{'Ant Design 是西湖区最具影响力的 Web 设计规范'}</div>
         </div>
 
         <div className={styles.main}>
@@ -102,10 +94,7 @@ const Login: React.FC = () => {
             }}
             submitter={{
               searchConfig: {
-                submitText: intl.formatMessage({
-                  id: 'pages.login.submit',
-                  defaultMessage: '登录',
-                }),
+                submitText: '登录',
               },
               render: (_, dom) => dom.pop(),
               submitButtonProps: {
@@ -117,37 +106,26 @@ const Login: React.FC = () => {
               },
             }}
             onFinish={async (values) => {
-              handleSubmit(values as LoginParams);
+              await handleSubmit(values as API.LoginParams);
             }}
           >
-            <Tabs>
-              <Tabs.TabPane
-                key="account"
-                active={true}
-                tab={intl.formatMessage({
-                  id: 'pages.login.accountLogin.tab',
-                  defaultMessage: '手机号密码登录',
-                })}
-              />
+            <Tabs activeKey={type} onChange={setType}>
+              <Tabs.TabPane key="account" tab={'账户密码登录'} />
+              <Tabs.TabPane key="mobile" tab={'手机号登录'} />
             </Tabs>
 
-            {!success && errorMessage && (
-              <LoginMessage
-                content={errorMessage}
-              />
+            {status === 'error' && loginType === 'account' && (
+              <LoginMessage content={'错误的用户名和密码(admin/ant.design)'} />
             )}
-            {(
+            {type === 'account' && (
               <>
                 <ProFormText
-                  name="mobile"
+                  name="username"
                   fieldProps={{
                     size: 'large',
                     prefix: <UserOutlined className={styles.prefixIcon} />,
                   }}
-                  placeholder={intl.formatMessage({
-                    id: 'pages.login.username.placeholder',
-                    defaultMessage: '用户名: admin or user',
-                  })}
+                  placeholder={'用户名: admin or user'}
                   rules={[
                     {
                       required: true,
@@ -161,10 +139,7 @@ const Login: React.FC = () => {
                     size: 'large',
                     prefix: <LockOutlined className={styles.prefixIcon} />,
                   }}
-                  placeholder={intl.formatMessage({
-                    id: 'pages.login.password.placeholder',
-                    defaultMessage: '密码: ant.design',
-                  })}
+                  placeholder={'密码: ant.design'}
                   rules={[
                     {
                       required: true,
@@ -175,14 +150,87 @@ const Login: React.FC = () => {
               </>
             )}
 
+            {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
+            {type === 'mobile' && (
+              <>
+                <ProFormText
+                  fieldProps={{
+                    size: 'large',
+                    prefix: <MobileOutlined className={styles.prefixIcon} />,
+                  }}
+                  name="mobile"
+                  placeholder={'请输入手机号！'}
+                  rules={[
+                    {
+                      required: true,
+                      message: '手机号是必填项！',
+                    },
+                    {
+                      pattern: /^1\d{10}$/,
+                      message: '不合法的手机号！',
+                    },
+                  ]}
+                />
+                <ProFormCaptcha
+                  fieldProps={{
+                    size: 'large',
+                    prefix: <LockOutlined className={styles.prefixIcon} />,
+                  }}
+                  captchaProps={{
+                    size: 'large',
+                  }}
+                  placeholder={'请输入验证码！'}
+                  captchaTextRender={(timing, count) => {
+                    if (timing) {
+                      return `${count} ${'秒后重新获取'}`;
+                    }
+
+                    return '获取验证码';
+                  }}
+                  name="captcha"
+                  rules={[
+                    {
+                      required: true,
+                      message: '验证码是必填项！',
+                    },
+                  ]}
+                  onGetCaptcha={async (phone) => {
+                    const result = await getFakeCaptcha({
+                      phone,
+                    });
+
+                    if (result === false) {
+                      return;
+                    }
+
+                    message.success('获取验证码成功！验证码为：1234');
+                  }}
+                />
+              </>
+            )}
             <div
               style={{
                 marginBottom: 24,
               }}
             >
+              <ProFormCheckbox noStyle name="autoLogin">
+                自动登录
+              </ProFormCheckbox>
+              <a
+                style={{
+                  float: 'right',
+                }}
+              >
+                忘记密码 ?
+              </a>
             </div>
           </ProForm>
-          
+          <Space className={styles.other}>
+            其他登录方式 :
+            <AlipayCircleOutlined className={styles.icon} />
+            <TaobaoCircleOutlined className={styles.icon} />
+            <WeiboCircleOutlined className={styles.icon} />
+          </Space>
         </div>
       </div>
       <Footer />

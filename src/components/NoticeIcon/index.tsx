@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tag, message } from 'antd';
 import { groupBy } from 'lodash';
 import moment from 'moment';
-import { useModel } from 'umi';
+import { useRequest } from 'umi';
 import { getNotices } from '@/services/ant-design-pro/api';
 
 import NoticeIcon from './NoticeIcon';
@@ -71,13 +71,14 @@ const getUnreadData = (noticeData: Record<string, API.NoticeIconItem[]>) => {
 };
 
 const NoticeIconView = () => {
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState || {};
+  // const { initialState } = useModel('@@initialState');
+  // const { currentUser } = initialState || {};
   const [notices, setNotices] = useState<API.NoticeIconItem[]>([]);
+  const { data } = useRequest(getNotices);
 
   useEffect(() => {
-    getNotices().then(({ data }) => setNotices(data || []));
-  }, []);
+    setNotices(data || []);
+  }, [data]);
 
   const noticeData = getNoticeData(notices);
   const unreadMsg = getUnreadData(noticeData || {});
@@ -110,7 +111,8 @@ const NoticeIconView = () => {
   return (
     <NoticeIcon
       className={styles.action}
-      count={currentUser && currentUser.unreadCount}
+      // count={currentUser && currentUser.unreadCount}
+      count={0}
       onItemClick={(item) => {
         changeReadState(item.id!);
       }}
