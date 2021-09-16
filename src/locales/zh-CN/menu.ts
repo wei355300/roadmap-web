@@ -1,7 +1,4 @@
 export default {
-  'menu.kanban': '看板',
-  'menu.tapd': 'TAPD',
-  'menu.tapd.kanban': '看板',
   'menu.welcome': '欢迎',
   'menu.more-blocks': '更多区块',
   'menu.home': '首页',
@@ -52,4 +49,12 @@ export default {
   'menu.editor.flow': '流程编辑器',
   'menu.editor.mind': '脑图编辑器',
   'menu.editor.koni': '拓扑编辑器',
+
+  'menu.contact': '人员管理',
+  'menu.contact.employee-list': '员工列表',
+  'menu.contact.account-list': '账号列表',
+  'menu.contact.contact-external-list': '外部联系人列表',
+
+  'menu.chat': '会话管理',
+  'menu.chat.chat-list': '会话列表'
 };

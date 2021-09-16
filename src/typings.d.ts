@@ -12,24 +12,27 @@ declare module '*.bmp';
 declare module '*.tiff';
 declare module 'omit.js';
 
+declare module 'react-infinite-scroller';
+
 // google analytics interface
-interface GAFieldsObject {
+type GAFieldsObject = {
   eventCategory: string;
   eventAction: string;
   eventLabel?: string;
   eventValue?: number;
   nonInteraction?: boolean;
-}
-interface Window {
+};
+
+type Window = {
   ga: (
     command: 'send',
     hitType: 'event' | 'pageview',
     fieldsObject: GAFieldsObject | string,
   ) => void;
   reloadAuthorized: () => void;
-}
+};
 
-declare let ga: Function;
+declare let ga: () => void;
 
 // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。

@@ -5,33 +5,23 @@
  * For details, please see
  * https://pro.ant.design/docs/deploy
  */
-
-const localDomain = '192.168.31.224';
-
 export default {
-  local: {
-    '/api/': {
-      target: `http://${localDomain}:8080`,
-      changeOrigin: true,
-      pathRewrite: { '^': '' },
-    },
-  },
   dev: {
-    '/api/': {
-      target: `http://${localDomain}:8080`,
+    '/api/qc': {
+      target: 'http://127.0.0.1:8082',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
   },
   test: {
-    '/api': {
-      target: 'http://preview.pro.ant.design',
+    '/api/qc': {
+      target: 'http://101.37.90.197:8800',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
   },
   pre: {
-    '/api': {
+    '/api/': {
       target: 'your pre url',
       changeOrigin: true,
       pathRewrite: { '^': '' },

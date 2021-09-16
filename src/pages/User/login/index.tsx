@@ -1,20 +1,17 @@
-import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
-import { Alert, Checkbox } from 'antd';
+import {
+  LockOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+import { Alert, message, Tabs } from 'antd';
 import React, { useState } from 'react';
-import { Link, connect, Dispatch } from 'umi';
-import { StateType } from '@/models/login';
-import { LoginParamsType } from '@/services/login';
-import { ConnectState } from '@/models/connect';
-import LoginForm from './components/Login';
-
-import styles from './style.less';
-
-const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginForm;
-interface LoginProps {
-  dispatch: Dispatch;
-  userLogin: StateType;
-  submitting?: boolean;
-}
+import ProForm, { ProFormText } from '@ant-design/pro-form';
+import { useIntl, Link, history, useModel } from 'umi';
+import Footer from '@/components/Footer';
+// import { login } from '@/services/ant-design-pro/api';
+// import { login } from './service';
+import { LoginParams, LoginResult,  login } from './model';
+// import { CurrentUser }  from '@/pages/User/model';
+import styles from './index.less';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -28,109 +25,169 @@ const LoginMessage: React.FC<{
     showIcon
   />
 );
+/** 此方法会跳转到 redirect 参数所在的位置 */
 
-const Login: React.FC<LoginProps> = (props) => {
-  const { userLogin = {}, submitting } = props;
-  const { status, type: loginType } = userLogin;
-  const [autoLogin, setAutoLogin] = useState(true);
-  const [type, setType] = useState<string>('account');
+const goto = () => {
+  if (!history) return;
+  setTimeout(() => {
+    const { query } = history.location;
+    const { redirect } = query as {
+      redirect: string;
+    };
+    history.push(redirect || '/');
+  }, 10);
+};
 
-  const handleSubmit = (values: LoginParamsType) => {
-    const { dispatch } = props;
-    dispatch({
-      type: 'login/login',
-      payload: { ...values, type },
-    });
+const Login: React.FC = () => {
+  const [submitting, setSubmitting] = useState(false);
+  const [userLoginState, setUserLoginState] = useState<LoginResult>({});
+  // const [type, setType] = useState<string>('account');
+  const { initialState, setInitialState } = useModel('@@initialState');
+  const intl = useIntl();
+
+  const fetchUserInfo = async () => {
+    const userInfo = await initialState?.fetchUserInfo?.();
+
+    if (userInfo) {
+      setInitialState({ ...initialState, currentUser: userInfo });
+    }
   };
-  return (
-    <div className={styles.main}>
-      <LoginForm activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
-        <Tab key="account" tab="账户密码登录">
-          {status === 'error' && loginType === 'account' && !submitting && (
-            <LoginMessage content="账户或密码错误（admin/ant.design）" />
-          )}
 
-          <UserName
-            name="userName"
-            placeholder="用户名: admin or user"
-            rules={[
-              {
-                required: true,
-                message: '请输入用户名!',
+  const updateToken = (token: string) => {
+    localStorage.setItem('Token', token || "");
+  }
+
+  const handleSubmit = async (values: LoginParams) => {
+    setSubmitting(true);
+
+    try {
+      // 登录
+      const msg = await login({ ...values });
+
+      if (msg.success) {
+        message.success('登录成功！');
+        updateToken(msg.data?.token || "");
+        await fetchUserInfo();
+        goto();
+        return;
+      } // 如果失败去设置用户错误信息
+
+      setUserLoginState(msg);
+    } catch (error) {
+      message.error('登录失败，请重试！');
+    }
+
+    setSubmitting(false);
+  };
+
+  const { success, errorCode, errorMessage } = userLoginState;
+  return (
+    <div className={styles.container}>
+      {/* <div className={styles.lang}>{SelectLang && <SelectLang />}</div> */}
+      <div className={styles.content}>
+        <div className={styles.top}>
+          <div className={styles.header}>
+            <Link to="/">
+              <img alt="logo" className={styles.logo} src="/logo.svg" />
+              <span className={styles.title}>会话管理系统</span>
+            </Link>
+          </div>
+          <div className={styles.desc}></div>
+        </div>
+
+        <div className={styles.main}>
+          <ProForm
+            initialValues={{
+              autoLogin: true,
+            }}
+            submitter={{
+              searchConfig: {
+                submitText: intl.formatMessage({
+                  id: 'pages.login.submit',
+                  defaultMessage: '登录',
+                }),
               },
-            ]}
-          />
-          <Password
-            name="password"
-            placeholder="密码: ant.design"
-            rules={[
-              {
-                required: true,
-                message: '请输入密码！',
+              render: (_, dom) => dom.pop(),
+              submitButtonProps: {
+                loading: submitting,
+                size: 'large',
+                style: {
+                  width: '100%',
+                },
               },
-            ]}
-          />
-        </Tab>
-        <Tab key="mobile" tab="手机号登录">
-          {status === 'error' && loginType === 'mobile' && !submitting && (
-            <LoginMessage content="验证码错误" />
-          )}
-          <Mobile
-            name="mobile"
-            placeholder="手机号"
-            rules={[
-              {
-                required: true,
-                message: '请输入手机号！',
-              },
-              {
-                pattern: /^1\d{10}$/,
-                message: '手机号格式错误！',
-              },
-            ]}
-          />
-          <Captcha
-            name="captcha"
-            placeholder="验证码"
-            countDown={120}
-            getCaptchaButtonText=""
-            getCaptchaSecondText="秒"
-            rules={[
-              {
-                required: true,
-                message: '请输入验证码！',
-              },
-            ]}
-          />
-        </Tab>
-        <div>
-          <Checkbox checked={autoLogin} onChange={(e) => setAutoLogin(e.target.checked)}>
-            自动登录
-          </Checkbox>
-          <a
-            style={{
-              float: 'right',
+            }}
+            onFinish={async (values) => {
+              handleSubmit(values as LoginParams);
             }}
           >
-            忘记密码
-          </a>
+            <Tabs>
+              <Tabs.TabPane
+                key="account"
+                active={true}
+                tab={intl.formatMessage({
+                  id: 'pages.login.accountLogin.tab',
+                  defaultMessage: '手机号密码登录',
+                })}
+              />
+            </Tabs>
+
+            {!success && errorMessage && (
+              <LoginMessage
+                content={errorMessage}
+              />
+            )}
+            {(
+              <>
+                <ProFormText
+                  name="mobile"
+                  fieldProps={{
+                    size: 'large',
+                    prefix: <UserOutlined className={styles.prefixIcon} />,
+                  }}
+                  placeholder={intl.formatMessage({
+                    id: 'pages.login.username.placeholder',
+                    defaultMessage: '用户名: admin or user',
+                  })}
+                  rules={[
+                    {
+                      required: true,
+                      message: '用户名是必填项！',
+                    },
+                  ]}
+                />
+                <ProFormText.Password
+                  name="password"
+                  fieldProps={{
+                    size: 'large',
+                    prefix: <LockOutlined className={styles.prefixIcon} />,
+                  }}
+                  placeholder={intl.formatMessage({
+                    id: 'pages.login.password.placeholder',
+                    defaultMessage: '密码: ant.design',
+                  })}
+                  rules={[
+                    {
+                      required: true,
+                      message: '密码是必填项！',
+                    },
+                  ]}
+                />
+              </>
+            )}
+
+            <div
+              style={{
+                marginBottom: 24,
+              }}
+            >
+            </div>
+          </ProForm>
+          
         </div>
-        <Submit loading={submitting}>登录</Submit>
-        <div className={styles.other}>
-          其他登录方式
-          <AlipayCircleOutlined className={styles.icon} />
-          <TaobaoCircleOutlined className={styles.icon} />
-          <WeiboCircleOutlined className={styles.icon} />
-          <Link className={styles.register} to="/user/register">
-            注册账户
-          </Link>
-        </div>
-      </LoginForm>
+      </div>
+      <Footer />
     </div>
   );
 };
 
-export default connect(({ login, loading }: ConnectState) => ({
-  userLogin: login,
-  submitting: loading.effects['login/login'],
-}))(Login);
+export default Login;

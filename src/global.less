@@ -1,4 +1,4 @@
-@import "./theme.less";
+@import '~antd/es/style/themes/default.less';
 
 html,
 body,
@@ -12,6 +12,9 @@ body,
 
 .ant-layout {
   min-height: 100vh;
+}
+.ant-pro-sider.ant-layout-sider.ant-pro-sider-fixed {
+  left: unset;
 }
 
 canvas {
@@ -27,42 +30,6 @@ body {
 ul,
 ol {
   list-style: none;
-}
-
-.ant-pro-basicLayout-content {
-  height: calc(100vh - 48px - 48px);
-  margin: 0;
-  overflow: hidden;
-}
-
-.ant-pro-page-container[class] {
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-}
-
-.ant-pro-grid-content {
-  height: calc(100% - 98px);
-  overflow: hidden;
-
-  &-children {
-    height: 100%;
-    overflow: hidden;
-
-    > div {
-      height: 100%;
-      overflow: hidden;
-    }
-
-    // &-content {
-    //   height: 100%;
-    // }
-  }
-}
-
-.ant-pro-page-container-children-content {
-  height: 100%;
-  margin: 0;
 }
 
 @media (max-width: @screen-xs) {
@@ -87,10 +54,4 @@ ol {
   body .ant-design-pro > .ant-layout {
     min-height: 100vh;
   }
-}
-
-
-// 禁用可视的滚动条显示
-.no-scroll-bar::-webkit-scrollbar {
-  display: none;
 }
