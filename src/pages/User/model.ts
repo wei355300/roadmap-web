@@ -1,5 +1,4 @@
-
-import { request } from 'umi';
+import {request} from 'umi';
 
 export interface CurrentUser {
   id?: number;
@@ -16,7 +15,7 @@ export interface CurrentUserResult {
   errorCode?: string;
   errorMessage?: string;
   data?: CurrentUser;
-  
+
 }
 
 export async function currentUserInfo(options?: { [key: string]: any }) {

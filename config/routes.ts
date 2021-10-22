@@ -20,6 +20,7 @@ export default [
     ],
   },
   { name: '查询表格', icon: 'table', path: '/list', component: './TableList' },
-  { path: '/', redirect: '/welcome' },
+  { name: '任务看板', icon: 'table', path: '/worker/board', component: './worker/board' },
+  { path: '/', redirect: '/worker/board' },
   { component: './404' },
 ];

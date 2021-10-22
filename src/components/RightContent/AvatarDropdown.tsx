@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 // import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 // import { Menu, Spin } from 'antd';
 // import { history, useModel } from 'umi';
