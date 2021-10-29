@@ -8,8 +8,9 @@
 
 import React from "react";
 import DroppableColumn from "./components/ColumnComponent";
-import {ProjectQueryType} from "./data";
 import FilterComponent from './components/FilterComponent';
+import type {ProjectQueryType} from "./data";
+import {Empty} from "antd";
 
 interface WorkerBoardPropsType {
 }
@@ -24,7 +25,6 @@ class WorkerBoard extends React.Component<WorkerBoardPropsType, WorkerBoardState
   constructor(props: WorkerBoardPropsType) {
     super(props);
     this.state = {query: [], queryTimes: 0}
-    // this.submitQuery.bind(this);
   }
 
   componentDidMount() {
@@ -41,9 +41,12 @@ class WorkerBoard extends React.Component<WorkerBoardPropsType, WorkerBoardState
       <div>
         <FilterComponent onQuery={this.submitQuery} />
       </div>
-      <div style={{ display: "flex", overflowX: 'auto' }}>
-        <DroppableColumn key={this.state.queryTimes} query={this.state.query}/>
-      </div>
+      {(this.state.query && this.state.query.length > 0)
+        ? <div style={{ display: "flex", overflowX: 'auto' }}>
+            <DroppableColumn key={this.state.queryTimes} query={this.state.query}/>
+          </div>
+        :<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'请选择过滤条件'}/>
+      }
     </div>
   }
 }

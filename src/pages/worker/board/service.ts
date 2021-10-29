@@ -1,8 +1,8 @@
 import request from 'umi-request';
 
-import {WorkerBoardQueryType, TraceDataType, ProjectQueryType} from './data';
+import type {TraceDataType, ProjectQueryType} from './data';
 
-export async function requestWorkerTraceData(p: WorkerBoardQueryType) {
+export async function requestWorkerTraceData(p: ProjectQueryType[]) {
   return request('/api/worker/board/list', {
     params: p,
   });
@@ -13,5 +13,5 @@ export async function orderWorkerTraceData(data: TraceDataType) {
 }
 
 export async function requestProjects(): Promise<{ data: ProjectQueryType[] }> {
-  return request('/api/worker/board/projects', {method: "GET"});
+  return request('/api/tapd/worker/board/projects', {method: "GET"});
 }

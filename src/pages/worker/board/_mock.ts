@@ -18,18 +18,18 @@ function getBoardListData(req: Request, res: Response) {
             type: "story",
             link: "http://www.baidu.com",
             weight: 100,
-            name: "这是一个开发 story1"
+            name: "这是一个开发 story1这是一个开发 story1这是一个开发 story1"
           },
           {
             id: "story_2",
-            type: "story",
+            type: "task",
             link: "http://www.baidu.com",
             weight: 100,
             name: "这是一个开发 story2"
           },
           {
             id: "story_3",
-            type: "story",
+            type: "bug",
             link: "http://www.baidu.com",
             weight: 100,
             name: "这是一个开发 story3"
@@ -213,7 +213,7 @@ function getProjects(req: Request, res: Response) {
 }
 
 export default {
-  'GET  /api/worker/board/list': getBoardListData,
-  'GET /api/worker/board/projects': getProjects,
+  'GET /api/worker/board/list': getBoardListData,
+  'GET /api/tapd/worker/board/projects': getProjects,
   'PUT /api/worker/board/order': putOrder,
 }

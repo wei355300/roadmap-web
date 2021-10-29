@@ -15,8 +15,8 @@ export default {
     },
   },
   test: {
-    '/api/': {
-      target: 'https://preview.pro.ant.design',
+    '/api/tapd': {
+      target: 'http://localhost:8080',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

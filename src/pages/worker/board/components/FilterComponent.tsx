@@ -5,8 +5,8 @@ import {
   Cascader,
   Form
 } from 'antd';
-import { FormInstance } from 'antd/es/form';
-import {ProjectQueryType} from "../data";
+import type { FormInstance } from 'antd/es/form';
+import type {ProjectQueryType} from "../data";
 import {requestProjects} from "../service";
 
 interface FilterComponentPropsType {
@@ -65,7 +65,7 @@ class FilterComponent extends React.Component<FilterComponentPropsType, FilterCo
     });
   }
 
-  onChange = (values: string[][]) => {
+  onChange = (values: any[][]) => {
     //values 是多维数组
     //第一维是项目, 第二维是迭代,第三维是角色
     //最后一维如果没有, 由表示为全选,
@@ -106,13 +106,10 @@ class FilterComponent extends React.Component<FilterComponentPropsType, FilterCo
       selectedProjectValues.push(selectedQuery);
     });
 
-    const state = {selectedQueries: selectedProjectValues};
-    console.log('onChange-state', state);
-    this.setState(state);
+    this.setState({selectedQueries: selectedProjectValues});
   }
 
   submitQuery = () => {
-    console.log('submitQuery-state', this.state);
     //最终需要上报的过滤条件, 不由表格的 form 值构成, 而是由 state 中的 selectedProjects 决定
     // 参考: #onChange() 的逻辑
     this.props.onQuery(this.state.selectedQueries);

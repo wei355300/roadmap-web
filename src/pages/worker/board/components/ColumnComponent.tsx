@@ -2,64 +2,128 @@
  * 使用 栅格列表(antd) 的形式展示队列信息
  */
 import React from 'react';
-import {connect, Dispatch} from 'umi';
-import {Card, message} from 'antd';
-import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
+// import {Empty, Space, Divider} from 'antd';
+import {DragDropContext, Droppable} from "react-beautiful-dnd";
 import {TraceDataType, ProjectQueryType} from "../data";
-import {WorkerBoardStateType} from "../model";
-import {orderWorkerTraceData} from "../service";
+import {requestWorkerTraceData} from "../service";
+import DroppableComponent from "./DroppableComponent";
 
 
-interface DroppableColumnProps {
-  query?: ProjectQueryType[];
-  list?: TraceDataType[];
-  updateData?: any;
-  dispatch: Dispatch;
-  loading: boolean;
+interface DroppableColumnPropsType {
+  query: ProjectQueryType[];
 }
 
-class DroppableColumn extends React.Component<DroppableColumnProps> {
+interface DroppableColumnStateType {
+  // updateData?: any;
+  list?: TraceDataType[];
+}
 
-  constructor(props: DroppableColumnProps) {
+class DroppableColumn extends React.Component<DroppableColumnPropsType, DroppableColumnStateType> {
+
+  constructor(props: DroppableColumnPropsType) {
     super(props);
-    this.onDragEnd.bind(this);
+    this.state = {
+      list: []
+    }
   }
 
   componentDidMount() {
-    console.log('componentDidMount in cloumn')
-    const {dispatch} = this.props;
-    const query = this.props.query;
-    if (query) {
-      dispatch({
-        type: 'WorkerBoard/fetchTraceData',
-        payload: {},
-      });
-    }
+    console.log('componentDidMount in cloumn', this.props.query)
+    this.requestColumnData(this.props.query);
   }
 
-  updateTraceData() {
-    // 乐观更新:
-    // 由于 dnd 的 drag 后, 需要同步更新 state,
-    // request
-    const updateDataPayload = this.props.updateData;
-    console.log('updateDataPayload', updateDataPayload);
-    if (updateDataPayload && updateDataPayload.data) {
-      orderWorkerTraceData(updateDataPayload.data).then((res) => {
-        message.success("success");
-      }).catch((error) => {
-        //根据 move, reorder 进行不同的数据还原
-        const {dispatch} = this.props;
-        message.error("error")
-        dispatch({
-          type: 'WorkerBoard/reverseDragTraceData',
-          payload: updateDataPayload.paylaod,
-        });
-      });
+  requestColumnData = (query: ProjectQueryType[]) => {
+    if(!query || query.length === 0) {
+      return;
     }
+    requestWorkerTraceData(query)
+      .then(res => {
+        if(res.data) {
+          this.setState({list: res.data})
+        }
+      })
+      .catch(error => {
+        console.log('requestWorkerTraceData error', error)
+      });
+  }
+
+  // updateTraceData = () => {
+  //   // 乐观更新:
+  //   // 由于 dnd 在 drag 后, 需要同步更新 state,
+  //   // request
+  //   const updateDataPayload = this.props.updateData;
+  //   console.log('updateDataPayload', updateDataPayload);
+  //   if (updateDataPayload && updateDataPayload.data) {
+  //     orderWorkerTraceData(updateDataPayload.data).then((res) => {
+  //       message.success("success");
+  //     }).catch((error) => {
+  //       //根据 move, reorder 进行不同的数据还原
+  //       const {dispatch} = this.props;
+  //       message.error("error")
+  //       dispatch({
+  //         type: 'WorkerBoard/reverseDragTraceData',
+  //         payload: updateDataPayload.paylaod,
+  //       });
+  //     });
+  //   }
+  // }
+
+  onReOrder = (sInd: number, startIndex: number, endIndex: number) => {
+    //action(payload) 格式:
+    // payload: {
+    //     index: sInd,
+    //     startIndex: source.index,
+    //     endIndex: destination.index
+    // }
+
+    const list = this.state.list || [];
+    const workerData = list[sInd];
+    const workerTraces = Array.from(workerData.traces);
+    const [removed] = workerTraces.splice(startIndex, 1);
+    workerTraces.splice(endIndex, 0, removed);
+
+    // updateTraceWeightForOrder(removed, workerTraces[endIndex-1], workerTraces[endIndex+1]);
+
+    workerData.traces = workerTraces;
+    const newList = [...list];
+    newList[sInd] = workerData;
+    this.setState({list: newList})
+    // const newState = {
+    //   ...state,
+    //   list: newList,
+    //   updateData: {type: "reorder", payload: action.payload, data: removed}
+    // };
+    // return newState;
+  }
+
+  onMove = (sourceIndex: number, destIndex: number, sourceStartIndex: number, destEndIndex: number) => {
+    const list = this.state.list || [];
+    const sourceWorkerData = list[sourceIndex];
+    const destWorkerData = list[destIndex];
+    const sourceWorkerTraces = Array.from(sourceWorkerData.traces);
+    const destWorkerTraces = Array.from(destWorkerData.traces);
+    const [removed] = sourceWorkerTraces.splice(sourceStartIndex, 1);
+
+    destWorkerTraces.splice(destEndIndex, 0, removed);
+
+    // updateTraceWeightForMove(destWorkerData, removed, destWorkerTraces[destEndIndex-1], destWorkerTraces[destEndIndex+1]);
+
+    sourceWorkerData.traces = sourceWorkerTraces;
+    destWorkerData.traces = destWorkerTraces;
+
+    const newList = [...list];
+    newList[sourceIndex] = sourceWorkerData;
+    newList[destIndex] = destWorkerData;
+    this.setState({list: newList})
+    // const newState = {
+    //   ...state,
+    //   list: newList,
+    //   updateData: {type: "move", payload: action.payload, data: removed}
+    // };
+    // return newState;
   }
 
   onDragEnd = (result: any) => {
-    const {dispatch} = this.props;
 
     const {source, destination} = result;
 
@@ -70,83 +134,31 @@ class DroppableColumn extends React.Component<DroppableColumnProps> {
     const dInd = +destination.droppableId;
 
     if (sInd === dInd) {
-      dispatch({
-        type: 'WorkerBoard/reOrderTraceData',
-        payload: {
-          index: sInd,
-          startIndex: source.index,
-          endIndex: destination.index
-        },
-      });
+      this.onReOrder(sInd, source.index, destination.index);
     } else {
-      dispatch({
-        type: 'WorkerBoard/moveTraceData',
-        payload: {
-          sourceIndex: sInd,
-          destIndex: dInd,
-          sourceStartIndex: source.index,
-          destEndIndex: destination.index
-        },
-      });
+      this.onMove(sInd, dInd, source.index, destination.index);
     }
   }
 
   render() {
-
-    this.updateTraceData();
-
+    const columnData = this.state.list;
     return <>
-      {(this.props.query && this.props.list) ? (
-        <DragDropContext onDragEnd={this.onDragEnd}>
-          {
-            this.props.list?.map((traceData, ind) => (
-              // <DroppableComponent traceData={traceData} index={ind} />
-              <Droppable key={traceData.id} droppableId={`${ind}`}>
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                  >
-                    <Card title={traceData.name} style={{width: 280}}>
-                      {traceData.traces.map((item, index) => (
-                        <Draggable
-                          key={item.id}
-                          draggableId={item.id}
-                          index={index}
-                        >
-                          {(draggableProvided) => (
-                            <div
-                              ref={draggableProvided.innerRef}
-                              {...draggableProvided.draggableProps}
-                              {...draggableProvided.dragHandleProps}
-                            >
-                              <Card>
-                                {item.name}
-                              </Card>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </Card>
-                  </div>
-                )}
-              </Droppable>))}
-        </DragDropContext>
-      ) : <div>请选择过滤条件</div>}
+      {(columnData && columnData.length > 0)
+        ? (
+            <DragDropContext onDragEnd={this.onDragEnd}>
+              {
+                this.state.list?.map((traceData, ind) => (
+                  <Droppable key={traceData.id} droppableId={`${ind}`}>
+                    {(provided) => (
+                      <DroppableComponent droppableProvided={provided} traceData={traceData}/>
+                    )}
+                  </Droppable>))}
+            </DragDropContext>
+          )
+        : <></>
+      }
     </>
   }
 }
 
-const mapState2Props = (state: {
-  WorkerBoard: WorkerBoardStateType;
-  loading: { models: { [key: string]: boolean } };
-}) => {
-  return {
-    list: state.WorkerBoard.list || [],
-    updateData: state.WorkerBoard.updateData || undefined,
-    loading: state.loading.models['WorkerBoard'],
-  }
-}
-
-export default connect(mapState2Props)(DroppableColumn);
+export default DroppableColumn;
