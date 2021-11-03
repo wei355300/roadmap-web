@@ -42,7 +42,7 @@ class DroppableComponent extends React.Component<DataComponentPropsType> {
       case 'task':
         ribbon = {
           text: ' 任务',
-          color: 'green'
+          color: 'grey'
         }
         break;
     }
@@ -56,11 +56,11 @@ class DroppableComponent extends React.Component<DataComponentPropsType> {
       ref={provided.innerRef}
       {...provided.droppableProps}
     >
-      <Card title={traceData.name} style={{width: 280}} >
+      <Card title={traceData.user} style={{width: 280}} >
         {traceData.traces.map((item, index) => (
           <Draggable
-            key={item.id}
-            draggableId={item.id}
+            key={item.id+"_"+traceData.user}
+            draggableId={item.id+"_"+traceData.user}
             index={index}
           >
             {(draggableProvided) => (
@@ -70,8 +70,8 @@ class DroppableComponent extends React.Component<DataComponentPropsType> {
                 {...draggableProvided.dragHandleProps}
               >
                 <Badge.Ribbon {...this.getRibbon(item)}>
-                  <Card title={<a target="_blank" href={item.link}>{item.name}</a>}>
-                    {item.name}
+                  <Card>
+                    {<a target="_blank" href={item.link}>{item.name}</a>}
                   </Card>
                 </Badge.Ribbon>
               </div>

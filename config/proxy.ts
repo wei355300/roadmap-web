@@ -8,14 +8,14 @@
  */
 export default {
   dev: {
-    '/api/': {
-      target: 'https://preview.pro.ant.design',
+    '/api/tapd': {
+      target: 'http://localhost:8080',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
   },
   test: {
-    '/api/tapd': {
+    '/api': {
       target: 'http://localhost:8080',
       changeOrigin: true,
       pathRewrite: { '^': '' },

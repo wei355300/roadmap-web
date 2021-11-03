@@ -147,8 +147,8 @@ class DroppableColumn extends React.Component<DroppableColumnPropsType, Droppabl
         ? (
             <DragDropContext onDragEnd={this.onDragEnd}>
               {
-                this.state.list?.map((traceData, ind) => (
-                  <Droppable key={traceData.id} droppableId={`${ind}`}>
+                columnData.map((traceData, ind) => (
+                  <Droppable key={ind} droppableId={`${ind}`}>
                     {(provided) => (
                       <DroppableComponent droppableProvided={provided} traceData={traceData}/>
                     )}

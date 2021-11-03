@@ -3,7 +3,7 @@ import {Request, Response} from 'express';
 
 function getBoardListData(req: Request, res: Response) {
   // const { projects, roles } = req.body;
-  // console.log('projects', projects);
+  console.log('getBoardListData');
   // console.log('roles', roles);
   res.send({
     code: 0,

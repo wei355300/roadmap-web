@@ -31,6 +31,7 @@ interface WorkerTraceType {
 
 export interface TraceDataType {
   name: string;
+  user: string;
   role: string;
   id: string;
   traces: WorkerTraceType[]; //任务列表

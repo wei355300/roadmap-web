@@ -2,9 +2,12 @@ import request from 'umi-request';
 
 import type {TraceDataType, ProjectQueryType} from './data';
 
-export async function requestWorkerTraceData(p: ProjectQueryType[]) {
-  return request('/api/worker/board/list', {
-    params: p,
+export async function requestWorkerTraceData(params: ProjectQueryType[]) {
+  console.log('requestWorkerTraceData', params);
+  return request('/api/tapd/worker/board/traces', {
+    data: params,
+    method: "POST",
+    requestType: "json"
   });
 }
 
