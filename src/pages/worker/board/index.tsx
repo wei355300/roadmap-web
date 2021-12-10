@@ -6,39 +6,41 @@
  * 通过多项目, 多迭代中负责人的属性进行任务归集展示
  */
 
-import React from "react";
-import DroppableColumn from "./components/ColumnComponent";
-import FilterComponent from './components/FilterComponent';
-import type {ProjectQueryType} from "./data";
-import {Empty} from "antd";
+import React from 'react';
+// import DroppableColumn from "./components/ColumnComponent";
+// import FilterComponent from './components/FilterComponent';
+// import type {ProjectQueryType} from "./data";
+// import {Empty} from "antd";
 
-interface WorkerBoardPropsType {
-}
+import TapdX from 'tapdx-npm';
+
+interface WorkerBoardPropsType {}
 
 interface WorkerBoardStateType {
-  query: ProjectQueryType[];
-  queryTimes: number;
+  // query: ProjectQueryType[];
+  // queryTimes: number;
 }
 
 class WorkerBoard extends React.Component<WorkerBoardPropsType, WorkerBoardStateType> {
+  // constructor(props: WorkerBoardPropsType) {
+  //   super(props);
+  //   // this.state = {query: [], queryTimes: 0}
+  // }
 
-  constructor(props: WorkerBoardPropsType) {
-    super(props);
-    this.state = {query: [], queryTimes: 0}
-  }
+  // componentDidMount() {
+  // }
 
-  componentDidMount() {
-  }
+  // submitQuery = (filterProjects: ProjectQueryType[]) => {
+  //   const queryTimes = this.state.queryTimes;
+  //   this.setState({queryTimes: (queryTimes + 1)})
+  //   this.setState({query: filterProjects})
+  // }
 
-  submitQuery = (filterProjects: ProjectQueryType[]) => {
-    const queryTimes = this.state.queryTimes;
-    this.setState({queryTimes: (queryTimes + 1)})
-    this.setState({query: filterProjects})
-  }
-
-  render(){
-    return <div>
+  render() {
+    return (
       <div>
+        <TapdX />
+        {/* <div>
         <FilterComponent onQuery={this.submitQuery} />
       </div>
       {(this.state.query && this.state.query.length > 0)
@@ -46,8 +48,9 @@ class WorkerBoard extends React.Component<WorkerBoardPropsType, WorkerBoardState
             <DroppableColumn key={this.state.queryTimes} query={this.state.query}/>
           </div>
         :<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'请选择过滤条件'}/>
-      }
-    </div>
+      } */}
+      </div>
+    );
   }
 }
 

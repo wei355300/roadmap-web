@@ -1,13 +1,15 @@
-import type {Settings as LayoutSettings} from '@ant-design/pro-layout';
-import {PageLoading} from '@ant-design/pro-layout';
-import type {RunTimeLayoutConfig} from 'umi';
-import {history} from 'umi';
+import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { PageLoading } from '@ant-design/pro-layout';
+import type { RunTimeLayoutConfig } from 'umi';
+import { history } from 'umi';
 import RightContent from '@/components/RightContent';
+import { tapdXRoute } from './routesBoost';
 // import Footer from '@/components/Footer';
 // import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 // import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 
 // const isDev = process.env.NODE_ENV === 'development';
+
 const loginPath = '/user/login';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
@@ -45,6 +47,16 @@ export async function getInitialState(): Promise<{
     // fetchUserInfo,
     settings: {},
   };
+}
+
+export function patchRoutes({ routes }: { routes: any[] }) {
+  const rootPath = routes.find((r) => r.path === '/');
+  rootPath.routes.unshift(tapdXRoute());
+}
+
+export function render(oldRender: Function) {
+  console.log('render', oldRender);
+  oldRender();
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout

@@ -20,7 +20,27 @@ export default [
     ],
   },
   { name: '查询表格', icon: 'table', path: '/list', component: './TableList' },
-  { name: '任务看板', icon: 'table', path: '/worker/board', component: './worker/board' },
-  { path: '/', redirect: '/worker/board' },
+  // {
+  //   name: 'TAPD',
+  //   icon: 'project',
+  //   path: '/worker',
+  //   component: './worker/board',
+  //   routes: [
+  //     {
+  //       name: '项目任务',
+  //       icon: 'ordered',
+  //       path: '/worker/board',
+  //       component: './worker/board',
+  //     },
+  //     {
+  //       name: '设置',
+  //       icon: 'setting',
+  //       path: '/worker/setting',
+  //       redirect: '/404',
+  //       // component: './worker/setting',
+  //     }
+  //   ]
+  // },
+  { path: '/', redirect: '/welcome' },
   { component: './404' },
 ];

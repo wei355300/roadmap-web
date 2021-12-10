@@ -1,5 +1,5 @@
 // https://umijs.org/config/
-import {defineConfig} from 'umi';
+import { defineConfig } from 'umi';
 // import { join } from 'path';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
@@ -58,7 +58,7 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
-  mfsu: {},
+  // mfsu: {},
   webpack5: {},
   exportStatic: {},
 });
