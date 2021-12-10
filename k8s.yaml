@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tapdx-web
+  name: tapdx-web
+  namespace: default
+spec:
+  progressDeadlineSeconds: 100
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: tapdx-web
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: tapdx-web
+    spec:
+      containers:
+        - image: ${TAPDX_WEB_IMAGE_TAG}
+          imagePullPolicy: Always
+          name: tapdx-web
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tapdx-web-svc
+  namespace: default
+spec:
+  ports:
+    - name: port
+      port: 40004
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: tapdx-web
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/service-weight: ''
+    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+  name: tapdx-ingress
+  namespace: default
+spec:
+  rules:
+    - host: tapdx.mantas.cn
+      http:
+        paths:
+          - backend:
+              serviceName: tapdx-web-svc
+              servicePort: 40004
+            path: /
+            pathType: ImplementationSpecific
+          - backend:
+              serviceName: tapdx-java-svc
+              servicePort: 40002
+            path: /api/tapd
+            pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - dev-mall.mantas.cn
+      secretName: mantas-cn-20221030
+
