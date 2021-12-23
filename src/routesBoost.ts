@@ -8,7 +8,7 @@ export const tapdXRoute = () => {
         name: '项目任务',
         icon: 'ordered',
         path: '/x/tapdx',
-        component: require('tapdx-npm').default,
+        component: require('tapdx').default,
       },
     ],
   };

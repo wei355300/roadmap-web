@@ -17,7 +17,7 @@ export default {
   test: {
     '/api': {
       // target: 'http://localhost:8080',
-      target: 'http://tapdx.mantas.cn',
+      target: 'https://tapdx.mantas.cn/',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

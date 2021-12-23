@@ -12,7 +12,7 @@ import React from 'react';
 // import type {ProjectQueryType} from "./data";
 // import {Empty} from "antd";
 
-import TapdX from 'tapdx-npm';
+import TapdX from 'tapdx';
 
 interface WorkerBoardPropsType {}
 
