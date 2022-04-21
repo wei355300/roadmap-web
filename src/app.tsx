@@ -50,7 +50,7 @@ export async function getInitialState(): Promise<{
 
 export function patchRoutes({ routes }: { routes: any[] }) {
   const rootPath = routes.find((r) => r.path === '/');
-  rootPath.routes.unshift(tapdXRoute());
+  rootPath.routes.push(tapdXRoute());
   // rootPath.routes.push({
   //   path: '/foo',
   //   name: "te",
