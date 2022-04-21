@@ -50,12 +50,19 @@ export async function getInitialState(): Promise<{
 
 export function patchRoutes({ routes }: { routes: any[] }) {
   const rootPath = routes.find((r) => r.path === '/');
-  rootPath.routes.push(tapdXRoute());
+  rootPath.routes.unshift(tapdXRoute());
   // rootPath.routes.push({
-  //   path: '/foo',
-  //   name: "te",
-  //   exact: true,
-  //   component: require('tapdx').default,
+  //   name: 'TapdX',
+  //   // icon: 'smile',
+  //   path: '/tapdx',
+  //   routes: [
+  //     {
+  //       name: '项目任务',
+  //       // icon: 'ordered',
+  //       path: '/tapdx/project/task',
+  //       component: require('tapdx').default,
+  //     },
+  //   ],
   // });
 }
 
