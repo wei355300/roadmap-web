@@ -1,15 +1,6 @@
 import React from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
-import {Alert, Card, Typography} from 'antd';
-// import styles from './Welcome.less';
-
-// const CodePreview: React.FC = ({ children }) => (
-//   <pre className={styles.pre}>
-//     <code>
-//       <Typography.Text copyable>{children}</Typography.Text>
-//     </code>
-//   </pre>
-// );
+import { PageContainer } from '@ant-design/pro-layout';
+import { Alert, Card, Typography } from 'antd';
 
 export default (): React.ReactNode => {
   return (

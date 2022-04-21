@@ -1,13 +1,13 @@
 export const tapdXRoute = () => {
   return {
     name: 'TapdX',
-    icon: 'table',
-    path: '/x',
+    // icon: 'smile',
+    path: '/tapdx',
     routes: [
       {
         name: '项目任务',
-        icon: 'ordered',
-        path: '/x/tapdx',
+        // icon: 'ordered',
+        path: '/tapdx/project/task',
         component: require('tapdx').default,
       },
     ],
