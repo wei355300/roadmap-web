@@ -70,7 +70,7 @@ spec:
           - backend:
               serviceName: tapdx-java-svc
               servicePort: 40002
-            path: /api/tapd
+            path: /api
             pathType: ImplementationSpecific
   tls:
     - hosts:
