@@ -29,7 +29,7 @@ class SiteRoadComponent extends React.Component<SiteRoadPropsType, SiteRoadState
   }
 
   componentDidMount() {
-    requestDomains().then((res) => {
+    requestDomains("domains.json").then((res) => {
       console.log(res);
       const domains = JSON.parse(Buffer.from(res.data, 'base64').toString('utf-8'));
       // requestDomains2().then((res) => {
