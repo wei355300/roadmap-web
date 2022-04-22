@@ -102,4 +102,10 @@ spec:
     - hosts:
         - tapdx.mantas.cn
       secretName: mantas-cn-20221030
+    - hosts:
+        - nav.petkit.com
+      secretName: petkit-com-20230518
+    - hosts:
+        - nav.petkit.cn
+      secretName: petkit-cn-20230105
 
