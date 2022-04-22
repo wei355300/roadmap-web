@@ -72,6 +72,32 @@ spec:
               servicePort: 40002
             path: /api
             pathType: ImplementationSpecific
+    - host: nav.petkit.cn
+      http:
+        paths:
+          - backend:
+              serviceName: tapdx-web-svc
+              servicePort: 40004
+            path: /
+            pathType: ImplementationSpecific
+          - backend:
+              serviceName: tapdx-java-svc
+              servicePort: 40002
+            path: /api
+            pathType: ImplementationSpecific
+    - host: nav.petkit.com
+      http:
+        paths:
+          - backend:
+              serviceName: tapdx-web-svc
+              servicePort: 40004
+            path: /
+            pathType: ImplementationSpecific
+          - backend:
+              serviceName: tapdx-java-svc
+              servicePort: 40002
+            path: /api
+            pathType: ImplementationSpecific
   tls:
     - hosts:
         - tapdx.mantas.cn
