@@ -3,7 +3,7 @@ import ProCard from '@ant-design/pro-card';
 import { Image, Button, Modal, Descriptions, Typography } from 'antd';
 import { ModuleItemType, ModuleChildType, ModuleGroupType, SiteType } from '../data';
 
-import { requestContentWithBranch } from '../service';
+import { requestContent } from '../service';
 
 const { Text, Link } = Typography;
 
@@ -21,7 +21,7 @@ const ImgCard: FC<{imgFile: string}> = (props) => {
   const [img, setImg] = useState("");
 
   useEffect(()=> {
-    requestContentWithBranch(imgFile).then(res => {
+    requestContent(imgFile).then(res => {
       setImg(res.data);
     });
   });
