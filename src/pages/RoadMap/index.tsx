@@ -4,7 +4,7 @@ import './styles.less';
 
 import { Result } from 'antd';
 
-import { requestContentWithBranch } from './service';
+import { requestContent } from './service';
 import { SiteType } from './data';
 import CardComponent from '@/pages/RoadMap/components/CardComponent';
 
@@ -29,7 +29,7 @@ class SiteRoadComponent extends React.Component<SiteRoadPropsType, SiteRoadState
   }
 
   componentDidMount() {
-    requestContentWithBranch("domains.json").then((res) => {
+    requestContent("domains.json").then((res) => {
       console.log(res);
       const domains = JSON.parse(Buffer.from(res.data, 'base64').toString('utf-8'));
       // requestDomains2().then((res) => {
