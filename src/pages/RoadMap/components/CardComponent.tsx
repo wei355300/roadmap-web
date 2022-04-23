@@ -1,7 +1,9 @@
-import React from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import ProCard from '@ant-design/pro-card';
 import { Image, Button, Modal, Descriptions, Typography } from 'antd';
 import { ModuleItemType, ModuleChildType, ModuleGroupType, SiteType } from '../data';
+
+import { requestContentWithBranch } from '../service';
 
 const { Text, Link } = Typography;
 
@@ -12,6 +14,19 @@ interface CardPropsType {
 interface CardStateType {
   modalProp: any;
   tabActiveKey?: string;
+}
+
+const ImgCard: FC<{imgFile: string}> = (props) => {
+  const {imgFile} = props;
+  const [img, setImg] = useState("");
+
+  useEffect(()=> {
+    requestContentWithBranch(imgFile).then(res => {
+      setImg(res.data);
+    });
+  });
+
+  return (<Image width={40} src={'data:image/jpg;base64,'+img} />);
 }
 
 /**
@@ -86,6 +101,7 @@ class CardComponent extends React.Component<CardPropsType, CardStateType> {
           ''
         )}
         {item.img ? <Image width={40} src={'data:image/jpg;base64,' + item.img} /> : ''}
+        {item.imgFile ? <ImgCard imgFile={item.imgFile} /> : ''}
       </ProCard>
     );
   };

@@ -3,6 +3,7 @@ export type ModuleItemType = {
   text: string;
   link: string;
   img: string;
+  imgFile: string;
   desc: {};
 };
 
