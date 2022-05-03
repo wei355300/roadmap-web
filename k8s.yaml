@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: tapdx-web
-  name: tapdx-web
+    app: roadmap-web
+  name: roadmap-web
   namespace: default
 spec:
   progressDeadlineSeconds: 100
@@ -11,7 +11,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: tapdx-web
+      app: roadmap-web
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -20,12 +20,12 @@ spec:
   template:
     metadata:
       labels:
-        app: tapdx-web
+        app: roadmap-web
     spec:
       containers:
-        - image: ${TAPDX_WEB_IMAGE_TAG}
+        - image: ${ROADMAP_WEB_IMAGE_TAG}
           imagePullPolicy: Always
-          name: tapdx-web
+          name: roadmap-web
           ports:
             - containerPort: 80
               protocol: TCP
@@ -35,7 +35,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: tapdx-web-svc
+  name: roadmap-web-svc
   namespace: default
 spec:
   ports:
@@ -44,7 +44,7 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    app: tapdx-web
+    app: roadmap-web
   sessionAffinity: None
   type: ClusterIP
 
@@ -55,33 +55,20 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/service-weight: ''
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
-  name: tapdx-ingress
+  name: road-ingress
   namespace: default
 spec:
   rules:
-    - host: tapdx.mantas.cn
-      http:
-        paths:
-          - backend:
-              serviceName: tapdx-web-svc
-              servicePort: 40004
-            path: /
-            pathType: ImplementationSpecific
-          - backend:
-              serviceName: tapdx-java-svc
-              servicePort: 40002
-            path: /api
-            pathType: ImplementationSpecific
     - host: nav.petkit.cn
       http:
         paths:
           - backend:
-              serviceName: tapdx-web-svc
+              serviceName: roadmap-web-svc
               servicePort: 40004
             path: /
             pathType: ImplementationSpecific
           - backend:
-              serviceName: tapdx-java-svc
+              serviceName: roadmap-java-svc
               servicePort: 40002
             path: /api
             pathType: ImplementationSpecific
@@ -89,19 +76,16 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: tapdx-web-svc
+              serviceName: roadmap-web-svc
               servicePort: 40004
             path: /
             pathType: ImplementationSpecific
           - backend:
-              serviceName: tapdx-java-svc
+              serviceName: roadmap-java-svc
               servicePort: 40002
             path: /api
             pathType: ImplementationSpecific
   tls:
-    - hosts:
-        - tapdx.mantas.cn
-      secretName: mantas-cn-20221030
     - hosts:
         - nav.petkit.com
       secretName: petkit-com-20230518
