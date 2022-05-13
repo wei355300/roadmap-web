@@ -5,6 +5,12 @@ export default [
     icon: 'smile',
     component: '@/pages/RoadMap',
   },
+  {
+    path: '/tapdx',
+    name: 'TAPDX',
+    icon: 'smile',
+    component: '@/pages/tapdx',
+  },
   { path: '/', redirect: '/site' },
   { component: './404' },
 ];

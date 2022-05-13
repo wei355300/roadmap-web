@@ -2,7 +2,7 @@ import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
 import type { RunTimeLayoutConfig } from 'umi';
 // import { history } from 'umi';
-import { tapdXRoute } from './routesBoost';
+// import { tapdXRoute } from './routesBoost';
 // import Footer from '@/components/Footer';
 // import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 // import { BookOutlined, LinkOutlined } from '@ant-design/icons';
@@ -48,23 +48,23 @@ export async function getInitialState(): Promise<{
   };
 }
 
-export function patchRoutes({ routes }: { routes: any[] }) {
-  const rootPath = routes.find((r) => r.path === '/');
-  rootPath.routes.unshift(tapdXRoute());
-  // rootPath.routes.push({
-  //   name: 'TapdX',
-  //   // icon: 'smile',
-  //   path: '/tapdx',
-  //   routes: [
-  //     {
-  //       name: '项目任务',
-  //       // icon: 'ordered',
-  //       path: '/tapdx/project/task',
-  //       component: require('tapdx').default,
-  //     },
-  //   ],
-  // });
-}
+// export function patchRoutes({ routes }: { routes: any[] }) {
+//   const rootPath = routes.find((r) => r.path === '/');
+//   rootPath.routes.unshift(tapdXRoute());
+//   // rootPath.routes.push({
+//   //   name: 'TapdX',
+//   //   // icon: 'smile',
+//   //   path: '/tapdx',
+//   //   routes: [
+//   //     {
+//   //       name: '项目任务',
+//   //       // icon: 'ordered',
+//   //       path: '/tapdx/project/task',
+//   //       component: require('tapdx').default,
+//   //     },
+//   //   ],
+//   // });
+// }
 
 export function render(oldRender: Function) {
   console.log('render', oldRender);
