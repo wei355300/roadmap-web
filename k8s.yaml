@@ -69,7 +69,7 @@ spec:
             pathType: ImplementationSpecific
           - backend:
               serviceName: roadmap-java-svc
-              servicePort: 40002
+              servicePort: 40012
             path: /api
             pathType: ImplementationSpecific
     - host: nav.petkit.com
@@ -82,7 +82,7 @@ spec:
             pathType: ImplementationSpecific
           - backend:
               serviceName: roadmap-java-svc
-              servicePort: 40002
+              servicePort: 40012
             path: /api
             pathType: ImplementationSpecific
   tls:
