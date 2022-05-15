@@ -2,7 +2,7 @@
  * 使用 栅格列表(antd) 的形式展示队列信息
  */
 import React from 'react';
-import { Result } from 'antd';
+import { Result, Card } from 'antd';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { TraceDataType, ProjectQueryType } from '../data';
 import { requestWorkerTraceData } from '../service';
@@ -15,7 +15,7 @@ interface ColumnPropsType {
 interface ColumnStateType {
   // updateData?: any;
   list?: TraceDataType[];
-  loading?: boolean;
+  loading: boolean;
 }
 
 class ColumnComponent extends React.Component<ColumnPropsType, ColumnStateType> {
@@ -23,18 +23,20 @@ class ColumnComponent extends React.Component<ColumnPropsType, ColumnStateType> 
     super(props);
     this.state = {
       list: [],
+      loading: false
     };
   }
 
   componentDidMount() {
-    this.setState({ loading: true });
     this.requestColumnData(this.props.query);
   }
 
   requestColumnData = (query: ProjectQueryType[]) => {
     if (!query || query.length === 0) {
+      this.setState({loading: false});
       return;
     }
+    this.setState({loading: true});
     requestWorkerTraceData(query)
       .then((res) => {
         if (res.data) {
@@ -129,21 +131,23 @@ class ColumnComponent extends React.Component<ColumnPropsType, ColumnStateType> 
     const columnData = this.state.list;
     return (
       <>
-        {columnData && columnData.length > 0 ? (
-          <div style={{ display: 'flex', overflowX: 'auto' }}>
-            <DragDropContext onDragEnd={this.onDragEnd}>
-              {columnData.map((traceData, ind) => (
-                <Droppable key={ind} droppableId={`${ind}`}>
-                  {(provided) => (
-                    <DroppableComponent droppableProvided={provided} traceData={traceData} />
-                  )}
-                </Droppable>
-              ))}
-            </DragDropContext>
-          </div>
-        ) : (
-          <Result status="info" title="无数据展示" subTitle="请选择项目!" />
-        )}
+        <Card style={{ marginTop: 20 }} loading={this.state.loading}>
+          {columnData && columnData.length > 0 ? (
+            <div style={{ display: 'flex', overflowX: 'auto' }}>
+              <DragDropContext onDragEnd={this.onDragEnd}>
+                {columnData.map((traceData, ind) => (
+                  <Droppable key={ind} droppableId={`${ind}`}>
+                    {(provided) => (
+                      <DroppableComponent droppableProvided={provided} traceData={traceData} />
+                    )}
+                  </Droppable>
+                ))}
+              </DragDropContext>
+            </div>
+          ) : (
+            <Result status="info" title="无数据展示" subTitle="请选择项目!" />
+          )}
+        </Card>
       </>
     );
   }

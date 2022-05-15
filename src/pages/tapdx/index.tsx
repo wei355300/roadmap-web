@@ -10,7 +10,7 @@ import React from 'react';
 import ColumnComponent from './components/ColumnComponent';
 import FilterComponent from './components/FilterComponent';
 import type { ProjectQueryType } from './data';
-import { Card } from 'antd';
+// import { Card } from 'antd';
 import './styles.less';
 
 interface WorkerBoardPropsType {}
@@ -46,9 +46,7 @@ class TapdX extends React.Component<WorkerBoardPropsType, WorkerBoardStateType> 
         <div>
           <FilterComponent onQuery={this.changeFilterOptions} />
         </div>
-        <Card style={{ marginTop: 20 }}>
-          <ColumnComponent key={this.state.columnComponentUpdatableKey} query={this.state.query} />
-        </Card>
+        <ColumnComponent key={this.state.columnComponentUpdatableKey} query={this.state.query} />
       </>
     );
   }
