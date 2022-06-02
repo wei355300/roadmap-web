@@ -59,7 +59,7 @@ metadata:
   namespace: default
 spec:
   rules:
-    - host: nav.petkit.cn
+    - host: roadmap.petkit.cn
       http:
         paths:
           - backend:
@@ -72,7 +72,7 @@ spec:
               servicePort: 40002
             path: /api
             pathType: ImplementationSpecific
-    - host: nav.petkit.com
+    - host: roadmap.petkit.com
       http:
         paths:
           - backend:
@@ -87,9 +87,9 @@ spec:
             pathType: ImplementationSpecific
   tls:
     - hosts:
-        - nav.petkit.com
+        - roadmap.petkit.com
       secretName: petkit-com-20230518
     - hosts:
-        - nav.petkit.cn
+        - roadmap.petkit.cn
       secretName: petkit-cn-20230105
 
