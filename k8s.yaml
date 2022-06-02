@@ -59,7 +59,7 @@ metadata:
   namespace: default
 spec:
   rules:
-    - host: nav.petkit.cn
+    - host: ${DOMAIN-1}
       http:
         paths:
           - backend:
@@ -72,7 +72,7 @@ spec:
               servicePort: 40012
             path: /api
             pathType: ImplementationSpecific
-    - host: nav.petkit.com
+    - host: ${DOMAIN-2}
       http:
         paths:
           - backend:
@@ -87,9 +87,9 @@ spec:
             pathType: ImplementationSpecific
   tls:
     - hosts:
-        - nav.petkit.com
-      secretName: petkit-com-20230518
+        - ${DOMAIN-1}
+      secretName: ${DOMAIN-1-TLS}
     - hosts:
-        - nav.petkit.cn
-      secretName: petkit-cn-20230105
+        - ${DOMAIN-2}
+      secretName: ${DOMAIN-2-TLS}
 
