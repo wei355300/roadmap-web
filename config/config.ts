@@ -40,7 +40,7 @@ export default defineConfig({
     basePath: '/',
   },
   // Fast Refresh 热更新
-  fastRefresh: {},
+  fastRefresh: true,
   // openAPI: [
   //   {
   //     requestLibPath: "import { request } from 'umi'",
@@ -59,6 +59,6 @@ export default defineConfig({
     type: 'none',
   },
   // mfsu: {},
-  webpack5: {},
+  // webpack5: {},
   exportStatic: {},
 });
