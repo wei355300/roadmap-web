@@ -4,7 +4,7 @@ import {request} from 'umi';
 import {DingtalkMetaInfoType} from './data';
 
 enum API {
-  DingtalkMetaInfoURL = "/base/auth/dingtalk/metainfo"
+  DingtalkMetaInfoURL = "/api/base/auth/dingtalk/metainfo"
 }
 
 /**

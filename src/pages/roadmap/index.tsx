@@ -6,7 +6,7 @@ import { Result } from 'antd';
 
 import { requestContent } from './service';
 import { SiteType } from './data';
-import CardComponent from '@/pages/roadmap/components/CardComponent';
+import CardComponent from './components/CardComponent';
 
 interface SiteRoadPropsType {}
 
