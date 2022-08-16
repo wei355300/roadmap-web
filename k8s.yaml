@@ -72,6 +72,11 @@ spec:
               servicePort: 40012
             path: /api
             pathType: ImplementationSpecific
+          - backend:
+              serviceName: roadmap-java-svc
+              servicePort: 40012
+            path: /base
+            pathType: ImplementationSpecific
     - host: ${DOMAIN-2}
       http:
         paths:
@@ -84,6 +89,11 @@ spec:
               serviceName: roadmap-java-svc
               servicePort: 40012
             path: /api
+            pathType: ImplementationSpecific
+          - backend:
+              serviceName: roadmap-java-svc
+              servicePort: 40012
+            path: /base
             pathType: ImplementationSpecific
   tls:
     - hosts:
