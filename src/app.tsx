@@ -47,25 +47,22 @@ export const initialStateConfig = {
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   account?: User.Account;
-  getAccount?: () => Promise<User.Account>;
+  getAccount?: Function;
   // fetchAccount?: () => Promise<User.Account | undefined>;
 }> {
 
-  const getAccount = async () => {
-    const a = await getLocalAccount();
-    return a;
-  }
+  // const getAccount = getLocalAccount;
   //如果是登录页面，不执行
   if (history.location.pathname !== loginPath) {
-    const account = await getAccount();
+    const account = getLocalAccount();
     return {
       account,
-      getAccount,
+      getAccount: getLocalAccount,
       settings: {},
     };
   }
   return {
-    getAccount,
+    getAccount: getLocalAccount,
     settings: {},
   };
 }
@@ -196,11 +193,18 @@ const tokenRequestInterceptor = (url: string, options: RequestOptionsInit) => {
   //   location.href = '/user/login';
   //   return {};
   // }
-
-  const tokenHeader = { Token: '123' };
-  return {
-    url: `${url}`,
-    options: { ...options, interceptors: true, headers: tokenHeader },
+  const account = getLocalAccount();
+  if (account) {
+    const tokenHeader = { Token: account?.token };
+    return {
+      url: `${url}`,
+      options: { ...options, interceptors: true, headers: tokenHeader },
+    }
+  }
+  else {
+    return {
+      url, options
+    }
   }
 }
 

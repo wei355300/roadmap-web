@@ -2,7 +2,7 @@
 import {request} from 'umi';
 
 
-export async function getLocalAccount() {
+export function getLocalAccount(): User.Account | undefined {
 
   const account = localStorage.getItem('account');
   if (!account) {
