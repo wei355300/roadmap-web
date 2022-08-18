@@ -35,7 +35,6 @@ export interface SiteType {
 // }
 
 export const flowAnalysisGraphData = (data: any) => {
-  console.log('flowAnalysisGraphData', data);
   return {
     nodes: [
       {
@@ -198,8 +197,6 @@ export const flowAnalysisGraphConfig = (data: any) => {
     behaviors: ['drag-canvas', 'zoom-canvas', 'drag-node'],
     onReady: (graph: any) => {
       graph.on('node:click', (evt: any) => {
-        console.log(evt);
-        console.log(evt.item._cfg.model.value.items[0]);
         window.open(evt.item._cfg.model.value.items[0].text, '_blank');
       });
     },

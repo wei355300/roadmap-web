@@ -10,16 +10,13 @@
  *
  *
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {useModel, history} from 'umi';
-import { ProFormText, LoginForm } from '@ant-design/pro-form';
-import { Space, Typography } from 'antd';
-//   import Footer from '@/components/Footer';
-//   import { login } from '@/services/ant-design-pro/api';
-//   import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import { LoginForm } from '@ant-design/pro-form';
+import { notification, Typography } from 'antd';
 
 import {queryDingtalkMetaInfo, queryTokenByRedirectUrl} from './service';
-import {saveLocalAccount} from '@/pages/account/service';
+import {saveLocalAccount, updateToken} from '@/pages/account/service';
 import {DingtalkMetaInfoType} from './data';
 
 import styles from './index.less';
@@ -40,6 +37,53 @@ const DingTalkLogin: React.FC = () => {
   const win: any = window;
   const DTFrameLogin = win.DTFrameLogin;
 
+  const updateLocalAccount = (account: User.Account) => {
+    saveLocalAccount(account);
+  }
+
+  const handleLoginSuccess = (account: User.Account) => {
+    updateLocalAccount(account);
+  }
+
+  const updateTokenExpiration = async (account: User.Account) => {
+    const expiration = Date.parse(account.expiration);
+    //如果token的效期太短(少于3天), 需要更新token效期
+    if(expiration.valueOf() - Date.now().valueOf() < 3*24*60*60*1000) {
+      const newAccount = await updateToken();
+      updateLocalAccount(newAccount.data);
+      return newAccount.data;
+    }
+    return account;
+  }
+
+  const handleDingtalkSuccess = (redirectUrl: string, authCode: string) => {
+    //直接跳转到 redirect_uri,
+    //window.location.href = redirectUrl;
+
+    // 也可以在不跳转页面的情况下，使用code进行授权
+    //调用服务端接口, 获取 token, 并跳转到 主页
+
+    queryTokenByRedirectUrl(redirectUrl, {authCode: authCode})
+      .then((res: HttpRes<User.Account>) => {
+        //保存账号信息到本地
+        const account = res.data;
+        handleLoginSuccess(account);
+        return account;
+      })
+      .then((account: User.Account) => {
+        const newAccount = updateTokenExpiration(account);
+        return newAccount;
+      })
+      .then((account: User.Account) => {
+        setInitialState((s) => ({...s, account: account})).then(() => {
+          //登录成功后, 跳转到首页
+          history.push("/");
+        });
+      })
+      .catch((err: any) => {
+        console.log("获取token失败:", err)
+      });
+  }
 
   //
   // 1. 获取钉钉的配置信息, 显示钉钉二维码
@@ -48,7 +92,6 @@ const DingTalkLogin: React.FC = () => {
 
   const buildDingtalkFrame = (metaInfo: DingtalkMetaInfoType) => {
     const redirectUri = win.location.protocol + "//" + win.location.host + "" + metaInfo.redirectUri;
-    console.log('redirect_uri', redirectUri);
     DTFrameLogin(
       {
         id: 'self_defined_element',
@@ -65,60 +108,38 @@ const DingTalkLogin: React.FC = () => {
         prompt: metaInfo.prompt,
       },
       (loginResult: any) => {
-        console.log('loginResult:', loginResult);
-
-        const { redirectUrl, authCode, state } = loginResult;
-        // 这里可以直接进行重定向
-        console.log('loginResult', loginResult);
-
-        //直接跳转到 redirect_uri,
-        //window.location.href = redirectUrl;
-
-        // 也可以在不跳转页面的情况下，使用code进行授权
-        //调用服务端接口, 获取 token, 并跳转到 主页
-        console.log(authCode);
-
-        queryTokenByRedirectUrl(redirectUrl, {authCode: authCode})
-          .then((res: HttpRes<User.Account>) => {
-            console.log("获取token结果:", res)
-            //保存账号信息到本地
-            // setAccount(res.data);
-            saveLocalAccount(res.data);
-            setInitialState((s) => ({...s, account: res.data})).then(() => {
-              //登录成功后, 跳转到首页
-              history.push("/");
-            });
-          })
-          .catch((err: any) => {
-            console.log("获取token失败:", err)
-          });
+        // const { redirectUrl, authCode, state } = loginResult;
+        const { redirectUrl, authCode } = loginResult;
+        handleDingtalkSuccess(redirectUrl, authCode);
       },
       (errorMsg: any) => {
-        console.log('errorMsg', errorMsg);
+        // console.log('errorMsg', errorMsg);
         // 这里一般需要展示登录失败的具体原因
-        alert(`Login Error---: ${errorMsg}`);
+        // alert(`Login Error---: ${errorMsg}`);
+        notification.warn({
+          message: `操作错误`,
+          description: `${errorMsg}`,
+        });
       },
     );
   }
 
   useEffect(() => {
-    //获取钉钉的配置
-    //获取成功后, 渲染钉钉二维码
-
+    if(initialState?.account) {}
     queryDingtalkMetaInfo()
       .then((res: HttpRes<DingtalkMetaInfoType>) => {
-        console.log("获取钉钉配置信息-http:", res)
         return res.data;
       })
       .then((data: DingtalkMetaInfoType) => {
-        console.log("获取钉钉配置信息-meta:", data)
         buildDingtalkFrame(data)
       })
       .catch((err: any) => {
-        console.log("获取钉钉配置信息失败:", err)
+        console.log("获取钉钉配置信息失败:", err);
+        notification.warn({
+          message: `系统错误`,
+          description: '获取钉钉配置信息失败',
+        });
       });
-
-
   }, []);
 
   return (

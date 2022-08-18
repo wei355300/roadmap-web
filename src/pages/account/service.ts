@@ -2,6 +2,16 @@
 import {request} from 'umi';
 
 
+export async function getLocalAccountAsync() {
+  return new Promise<User.Account>(() => {
+    const account = localStorage.getItem('account');
+    if (!account) {
+      return undefined;
+    }
+    return JSON.parse(account);
+  });
+}
+
 export function getLocalAccount(): User.Account | undefined {
 
   const account = localStorage.getItem('account');
@@ -9,11 +19,6 @@ export function getLocalAccount(): User.Account | undefined {
     return undefined;
   }
   return JSON.parse(account);
-    // return request<{
-    //     data: User.CurrentUser;
-    // }>('/api/user', {
-    //     method: 'GET',
-    // });
 }
 
 export function saveLocalAccount(account: User.Account) {
@@ -24,11 +29,10 @@ export function saveLocalAccount(account: User.Account) {
  * 更新Token及效期
  * @param options
  */
-export async function updateToken(options: {token: string}) {
+export async function updateToken() {
   return request<{
     data: User.Account;
   }>('/api/account/token', {
-    method: 'POST',
-    ...(options || {}),
+    method: 'POST'
   });
 }

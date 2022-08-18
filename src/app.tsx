@@ -163,6 +163,10 @@ const errorHandler = (error: ResponseError) => {
         description: errorText,
       });
     }
+    else {
+      //未登录, 或登录过期, 跳转到登录页面
+      history.push(loginPath)
+    }
   }
 
   if (error.name === 'BizError') {
@@ -180,31 +184,20 @@ const errorHandler = (error: ResponseError) => {
   throw error;
 };
 
+//所有以 /api 开头的请求, 如果存在账号数据, 则都携带上Token参数
 const tokenRequestInterceptor = (url: string, options: RequestOptionsInit) => {
-  if(url == '/api/login') {
-    return {
-      url,
-      options
+  if (url.startsWith('/api')) {
+    const account = getLocalAccount();
+    if (account) {
+      const tokenHeader = { Token: account?.token };
+      return {
+        url: `${url}`,
+        options: { ...options, interceptors: true, headers: tokenHeader },
+      }
     }
   }
-  //
-  // const token = localStorage.getItem('Token');
-  // if (!token) {
-  //   location.href = '/user/login';
-  //   return {};
-  // }
-  const account = getLocalAccount();
-  if (account) {
-    const tokenHeader = { Token: account?.token };
-    return {
-      url: `${url}`,
-      options: { ...options, interceptors: true, headers: tokenHeader },
-    }
-  }
-  else {
-    return {
-      url, options
-    }
+  return {
+    url, options
   }
 }
 
