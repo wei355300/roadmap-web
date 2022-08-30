@@ -72,6 +72,7 @@ class CardComponent extends React.Component<CardPropsType, CardStateType> {
         bordered
         headerBordered
         colSpan={6}
+        style={{textAlign: "center"}}
         title={item.name}
         extra={
           item.desc ? (

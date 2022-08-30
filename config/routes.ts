@@ -20,11 +20,6 @@ export default [
         routes: [
           {
             name: 'login',
-            path: '/user/login',
-            component: '@/pages/account/login/Login'
-          },
-          {
-            name: 'login',
             path: '/user/login/dingtalk',
             component: '@/pages/account/login/dingtalk/DingTalkLogin'
           }

@@ -108,12 +108,13 @@ const DingTalkLogin: React.FC = () => {
         prompt: metaInfo.prompt,
       },
       (loginResult: any) => {
+        console.log('loginResult', loginResult);
         // const { redirectUrl, authCode, state } = loginResult;
         const { redirectUrl, authCode } = loginResult;
         handleDingtalkSuccess(redirectUrl, authCode);
       },
       (errorMsg: any) => {
-        // console.log('errorMsg', errorMsg);
+        console.log('errorMsg', errorMsg);
         // 这里一般需要展示登录失败的具体原因
         // alert(`Login Error---: ${errorMsg}`);
         notification.warn({
