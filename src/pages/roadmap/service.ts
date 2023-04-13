@@ -1,4 +1,4 @@
-import request from 'umi-request';
+import {request} from 'umi';
 
 export async function requestContent(fileName: string): Promise<{ data: string }> {
   // const encodeFileName = Buffer.from(fileName, 'utf-8').toString('base64')

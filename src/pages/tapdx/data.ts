@@ -1,25 +1,27 @@
-export interface ProjectRoleQueryType {
+
+export type Role = {
   id: string;
   name: string;
 }
 
-export interface ProjectIterationQueryType {
+export type Iteration = {
   id: string;
   name: string;
   startDate: string;
   endDate: string;
 }
 
-export interface ProjectQueryType {
+export type Project = {
   id: string;
   name: string;
-  roles: ProjectRoleQueryType[];
-  iterations: ProjectIterationQueryType[];
+  roles?: Role[]; //按角色查询
+  iterations?: Iteration[]; //按迭代查询
+  startDate?: string;
+  endDate?: string;
 }
 
-export interface WorkerBoardQueryType {
-  projects: ProjectQueryType[];
-  // roles: ProjectRoleQueryType[];
+export interface FilterChangedAction {
+  onChanged: (filterProjects: Project[]) => void;
 }
 
 export interface WorkerTraceType {
@@ -28,6 +30,8 @@ export interface WorkerTraceType {
   link: string; //任务链接
   weight: number; //任务权重
   name: string; //任务名字
+  start?: string;
+  end?: string;
 }
 
 export interface TraceDataType {

@@ -50,11 +50,9 @@ class CardComponent extends React.Component<CardPropsType, CardStateType> {
 
   onTabChange = (key: string) => {
     this.setState({ tabActiveKey: key });
-    console.log('onTabChange', key);
   };
 
   showCardExtraModal = (item: ModuleItemType) => {
-    console.log('toCardExtra', item);
     this.setState({
       modalProp: {
         visible: true,
@@ -74,6 +72,7 @@ class CardComponent extends React.Component<CardPropsType, CardStateType> {
         bordered
         headerBordered
         colSpan={6}
+        style={{textAlign: "center"}}
         title={item.name}
         extra={
           item.desc ? (

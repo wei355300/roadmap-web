@@ -67,7 +67,7 @@ class DroppableComponent extends React.Component<DataComponentPropsType> {
                   <Badge.Ribbon {...this.getRibbon(item)}>
                     <Card>
                       {
-                        <a target="_blank" href={item.link}>
+                        <a target="_blank" href={item.link} rel="noreferrer">
                           {item.name}
                         </a>
                       }

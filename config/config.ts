@@ -7,6 +7,7 @@ import routes from './routes';
 
 const { REACT_APP_ENV } = process.env;
 export default defineConfig({
+  headScripts: ['https://g.alicdn.com/dingding/h5-dingtalk-login/0.21.0/ddlogin.js'],
   hash: true,
   antd: {},
   dva: {
@@ -61,4 +62,7 @@ export default defineConfig({
   // mfsu: {},
   // webpack5: {},
   exportStatic: {},
+  sass: {
+    // implementation: require('node-sass'),
+  }
 });

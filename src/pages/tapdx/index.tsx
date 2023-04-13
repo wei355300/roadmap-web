@@ -9,15 +9,16 @@
 import React from 'react';
 import ColumnComponent from './components/ColumnComponent';
 import FilterComponent from './components/FilterComponent';
-import type { ProjectQueryType } from './data';
+import type { Project } from './data';
 // import { Card } from 'antd';
 import './styles.less';
+import type { FilterChangedAction } from './data';
 
 interface WorkerBoardPropsType {}
 
 interface WorkerBoardStateType {
-  query: ProjectQueryType[];
-  columnComponentUpdatableKey?: number;
+  query: Project[];
+  columnComponentUpdatableKey: number;
 }
 
 class TapdX extends React.Component<WorkerBoardPropsType, WorkerBoardStateType> {
@@ -34,21 +35,19 @@ class TapdX extends React.Component<WorkerBoardPropsType, WorkerBoardStateType> 
    * (重新渲染ColumnComponent的生成, 而不是进行组件的比较后更新, 理论上性能跟好)
    * @param filterProjects
    */
-  changeFilterOptions = (filterProjects: ProjectQueryType[]) => {
-    const time = new Date().getTime(); //通过使用当前的时间戳, 触发ColumnComponent组件的重新渲染
-    this.setState({ columnComponentUpdatableKey: time });
-    this.setState({ query: filterProjects });
-  };
+  changedFilterAction: FilterChangedAction = {
+    onChanged: (filterProjects: Project[]) => {
+      const time: number = new Date().getTime(); //通过使用当前的时间戳, 触发ColumnComponent组件的重新渲染
+      this.setState({ columnComponentUpdatableKey: time });
+      this.setState({ query: filterProjects });
+    }
+  }
 
   render() {
-    return (
-      <>
-        <div>
-          <FilterComponent onQuery={this.changeFilterOptions} />
-        </div>
-        <ColumnComponent key={this.state.columnComponentUpdatableKey} query={this.state.query} />
+    return <>
+        <FilterComponent key={this.state.columnComponentUpdatableKey} changedAction={this.changedFilterAction} />
+        <ColumnComponent key={this.state.columnComponentUpdatableKey + 1} query={this.state.query} />
       </>
-    );
   }
 }
 

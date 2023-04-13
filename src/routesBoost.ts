@@ -1,14 +1,30 @@
-export const tapdXRoute = () => {
+// export const tapdXRoute = () => {
+//   return {
+//     name: 'TapdX',
+//     // icon: 'smile',
+//     path: '/tapdx',
+//     routes: [
+//       {
+//         name: '项目任务',
+//         // icon: 'ordered',
+//         path: '/tapdx/project/task',
+//         component: require('tapdx').default,
+//       },
+//     ],
+//   };
+// };
+
+export const DingTalkAuth = () => {
   return {
-    name: 'TapdX',
+    name: 'DingTalk',
     // icon: 'smile',
-    path: '/tapdx',
+    path: '/dingtalk',
     routes: [
       {
-        name: '项目任务',
+        name: '钉钉',
         // icon: 'ordered',
-        path: '/tapdx/project/task',
-        component: require('tapdx').default,
+        path: '/dingtalk/auth',
+        component: require('dingtalkauth').default,
       },
     ],
   };

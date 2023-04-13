@@ -6,7 +6,7 @@ import { Result } from 'antd';
 
 import { requestContent } from './service';
 import { SiteType } from './data';
-import CardComponent from '@/pages/RoadMap/components/CardComponent';
+import CardComponent from './components/CardComponent';
 
 interface SiteRoadPropsType {}
 
@@ -30,11 +30,7 @@ class SiteRoadComponent extends React.Component<SiteRoadPropsType, SiteRoadState
 
   componentDidMount() {
     requestContent("domains.json").then((res) => {
-      console.log(res);
       const domains = JSON.parse(Buffer.from(res.data, 'base64').toString('utf-8'));
-      // requestDomains2().then((res) => {
-      // const domains = res.data;
-      console.log('domains', domains);
       const tabList = this.tabList(domains);
       const tabContent = this.tabContent(domains);
       // console.log("tabActiveKey:", tabList[0].key);
@@ -50,7 +46,6 @@ class SiteRoadComponent extends React.Component<SiteRoadPropsType, SiteRoadState
 
   onTabChange = (key: string) => {
     this.setState({ tabActiveKey: key });
-    console.log('onTabChange', key);
   };
 
   tabContent = (domains: SiteType[]) => {
