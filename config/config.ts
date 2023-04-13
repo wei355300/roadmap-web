@@ -62,4 +62,7 @@ export default defineConfig({
   // mfsu: {},
   webpack5: {},
   exportStatic: {},
+  sass: {
+    // implementation: require('node-sass'),
+  }
 });

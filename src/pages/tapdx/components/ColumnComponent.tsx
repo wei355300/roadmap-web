@@ -4,23 +4,28 @@
 import React from 'react';
 import { Result, Card } from 'antd';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { TraceDataType, ProjectQueryType } from '../data';
+import type { TraceDataType, Project } from '../data';
 import { requestWorkerTraceData } from '../service';
 import DroppableComponent from './DroppableComponent';
+import { FrappeGantt, ViewMode } from "frappe-gantt-react";
+import type { Task } from 'frappe-gantt-react/typings/Task';
 
 interface ColumnPropsType {
-  query: ProjectQueryType[];
+  query: Project[];
 }
 
 interface ColumnStateType {
   // updateData?: any;
   list?: TraceDataType[];
+  ganttTasks?: Task[];
   loading: boolean;
 }
 
 class ColumnComponent extends React.Component<ColumnPropsType, ColumnStateType> {
+
   constructor(props: ColumnPropsType) {
     super(props);
+    console.log("ColumnComponent", props);
     this.state = {
       list: [],
       loading: false
@@ -31,7 +36,7 @@ class ColumnComponent extends React.Component<ColumnPropsType, ColumnStateType> 
     this.requestColumnData(this.props.query);
   }
 
-  requestColumnData = (query: ProjectQueryType[]) => {
+  requestColumnData = (query: Project[]) => {
     if (!query || query.length === 0) {
       this.setState({loading: false});
       return;
@@ -41,6 +46,7 @@ class ColumnComponent extends React.Component<ColumnPropsType, ColumnStateType> 
       .then((res) => {
         if (res.data) {
           this.setState({ list: res.data });
+          this.convertToGanttTasks(res.data);
         }
       })
       .catch((error) => {
@@ -51,32 +57,34 @@ class ColumnComponent extends React.Component<ColumnPropsType, ColumnStateType> 
       });
   };
 
-  onReOrder = (sInd: number, startIndex: number, endIndex: number) => {
-    //action(payload) 格式:
-    // payload: {
-    //     index: sInd,
-    //     startIndex: source.index,
-    //     endIndex: destination.index
-    // }
+  convertToGanttTasks = (data: TraceDataType[]) => {
+    const tasks: any[] = [];
+    data.forEach(d => {
+      d.traces.map((trace) => {
+        tasks.push({
+          id: trace.id,
+          name: trace.name,
+          start: trace.start || '',
+          end: trace.end || '',
+          progress: 10,
+          custom_class: "bar-milestone" // optional
+        })
+      });
+    })
+    this.setState({ganttTasks: tasks})
+  }
 
+  onReOrder = (sInd: number, startIndex: number, endIndex: number) => {
     const list = this.state.list || [];
     const workerData = list[sInd];
     const workerTraces = Array.from(workerData.traces);
     const [removed] = workerTraces.splice(startIndex, 1);
     workerTraces.splice(endIndex, 0, removed);
 
-    // updateTraceWeightForOrder(removed, workerTraces[endIndex-1], workerTraces[endIndex+1]);
-
     workerData.traces = workerTraces;
     const newList = [...list];
     newList[sInd] = workerData;
     this.setState({ list: newList });
-    // const newState = {
-    //   ...state,
-    //   list: newList,
-    //   updateData: {type: "reorder", payload: action.payload, data: removed}
-    // };
-    // return newState;
   };
 
   onMove = (
@@ -94,8 +102,6 @@ class ColumnComponent extends React.Component<ColumnPropsType, ColumnStateType> 
 
     destWorkerTraces.splice(destEndIndex, 0, removed);
 
-    // updateTraceWeightForMove(destWorkerData, removed, destWorkerTraces[destEndIndex-1], destWorkerTraces[destEndIndex+1]);
-
     sourceWorkerData.traces = sourceWorkerTraces;
     destWorkerData.traces = destWorkerTraces;
 
@@ -103,12 +109,6 @@ class ColumnComponent extends React.Component<ColumnPropsType, ColumnStateType> 
     newList[sourceIndex] = sourceWorkerData;
     newList[destIndex] = destWorkerData;
     this.setState({ list: newList });
-    // const newState = {
-    //   ...state,
-    //   list: newList,
-    //   updateData: {type: "move", payload: action.payload, data: removed}
-    // };
-    // return newState;
   };
 
   onDragEnd = (result: any) => {
@@ -131,6 +131,16 @@ class ColumnComponent extends React.Component<ColumnPropsType, ColumnStateType> 
     const columnData = this.state.list;
     return (
       <>
+        {this.state.ganttTasks && this.state.ganttTasks.length > 0 &&
+          <div>
+            <Card style={{ marginTop: 20 }} loading={this.state.loading}>
+              <FrappeGantt
+                tasks={this.state.ganttTasks || []}
+                viewMode={ViewMode.Week}
+              />
+            </Card>
+          </div>
+        }
         <Card style={{ marginTop: 20 }} loading={this.state.loading}>
           {columnData && columnData.length > 0 ? (
             <div style={{ display: 'flex', overflowX: 'auto' }}>

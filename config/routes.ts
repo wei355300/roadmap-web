@@ -12,6 +12,12 @@ export default [
     component: '@/pages/tapdx',
   },
   {
+    path: '/tapdx2',
+    name: 'TAPDX2',
+    icon: 'smile',
+    component: '@/pages/tapdx/fc',
+  },
+  {
     path: '/user',
     layout: false,
     routes: [
