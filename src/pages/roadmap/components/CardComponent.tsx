@@ -166,7 +166,7 @@ class CardComponent extends React.Component<CardPropsType, CardStateType> {
 
         <Modal
           title={this.state.modalProp.title}
-          visible={this.state.modalProp.visible}
+          open={this.state.modalProp.visible}
           footer={null}
           onCancel={() => {
             this.setState({ modalProp: { visible: false } });

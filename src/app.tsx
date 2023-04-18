@@ -1,45 +1,14 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { PageLoading } from '@ant-design/pro-layout';
-import type { RunTimeLayoutConfig, RequestConfig } from 'umi';
+import type { RunTimeLayoutConfig } from 'umi';
 import { history } from 'umi';
-import { notification } from 'antd';
-import { RequestOptionsInit, ResponseError } from 'umi-request';
-// import { DingTalkAuth } from './routesBoost';
-// import Footer from '@/components/Footer';
-// import { queryUserInfo } from '@/pages/account/service';
-// import { RequestConfig } from 'umi';
-// import { BookOutlined, LinkOutlined } from '@ant-design/icons';
+import { message, notification } from 'antd';
+import { RequestOptionsInit } from 'umi-request';
+import defaultSettings from '../config/defaultSettings';
 
 import { getLocalAccount } from '@/pages/account/service';
-
-// const isDev = process.env.NODE_ENV === 'development';
+import { RequestConfig } from '@@/plugin-request/request';
 
 const loginPath = '/user/login/dingtalk';
-
-// export const request: RequestConfig = {
-//   //如果是 /api 前缀的请求, 在Header上增加Token
-//   requestInterceptors: [
-//     (url: string, options: RequestConfig) => {
-//     console.log('requestInterceptors', url, options);
-//       // const is = getInitialState().;
-//       // if(url.startsWith("/api")) {
-//       //   const tokenHeader = options?.headers?['Token'] : undefined;
-//       //   if (!tokenHeader) {
-//       //     options.headers = {
-//       //       Token: "123",
-//       //       ...options.headers
-//       //     }
-//       //   }
-//       // }
-//       return {url:`$url`, options: {...options, interceptors: true, headers: {'Token': '123'}}}
-//     }
-//   ]
-// };
-
-/** 获取用户信息比较慢的时候会展示一个 loading */
-export const initialStateConfig = {
-  loading: <PageLoading />,
-};
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -47,23 +16,20 @@ export const initialStateConfig = {
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   account?: User.Account;
-  getAccount?: Function;
-  // fetchAccount?: () => Promise<User.Account | undefined>;
+  getAccount?: () => User.Account | undefined;
 }> {
-
-  // const getAccount = getLocalAccount;
   //如果是登录页面，不执行
   if (history.location.pathname !== loginPath) {
     const account = getLocalAccount();
     return {
       account,
       getAccount: getLocalAccount,
-      settings: {},
+      settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
   return {
     getAccount: getLocalAccount,
-    settings: {},
+    settings: defaultSettings as Partial<LayoutSettings>,
   };
 }
 
@@ -85,12 +51,12 @@ export async function getInitialState(): Promise<{
 //   });
 // }
 
-export function render(oldRender: Function) {
-  oldRender();
-}
+// export function render(oldRender: Function) {
+//   oldRender();
+// }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+export const layout: RunTimeLayoutConfig = ({ initialState }: any) => {
   return {
     rightContentRender: () => <div />,
     disableContentMargin: false,
@@ -125,7 +91,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 };
 
 
-const codeMessage = {
+const codeMessage: any = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
   202: '一个请求已经进入后台排队（异步任务）。',
@@ -144,11 +110,7 @@ const codeMessage = {
   504: '网关超时。',
 };
 
-/** 异常处理程序
- * @see https://beta-pro.ant.design/docs/request-cn
- */
-const errorHandler = (error: ResponseError) => {
-  const { response } = error;
+const responseStatusErrorHandler = (response: Response, options: any) => {
 
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
@@ -156,21 +118,26 @@ const errorHandler = (error: ResponseError) => {
 
     // 如果是 401 状态码, 标识登录标识过期, 不弹框提示, 而是直接跳转回登录页面
     if (response.status !== 401) {
-      notification.error({
-        message: `请求错误 ${status}: ${url}`,
-        description: errorText,
+      message.error({
+        content: `请求错误 ${status}: ${url}`,
+        duration: 1,
+        // description: errorText,
       });
     }
     else {
+      message.error({
+        content: `登录过期, 请重新登录`,
+        duration: 1,
+      });
       //未登录, 或登录过期, 跳转到登录页面
       history.push(loginPath)
     }
   }
 
-  if (error.name === 'BizError') {
-    notification.warn({
+  if (response.statusText === 'BizError') {
+    notification.warning({
       message: `操作错误`,
-      description: error.message,
+      description: response.statusText,
     });
   }
   else if (!response) {
@@ -179,7 +146,7 @@ const errorHandler = (error: ResponseError) => {
       message: '网络异常',
     });
   }
-  throw error;
+  return response;
 };
 
 //所有以 /api 开头的请求, 如果存在账号数据, 则都携带上Token参数
@@ -199,11 +166,28 @@ const tokenRequestInterceptor = (url: string, options: RequestOptionsInit) => {
   }
 }
 
+// type ResponseStructure = {
+//   code: number,
+//   msg: string,
+//   data: any
+// } | {
+//   status: number,
+//   statusText: string
+// };
+
 // https://umijs.org/zh-CN/plugins/plugin-request
 export const request: RequestConfig = {
-  errorHandler,
+
+  errorConfig: {
+    errorHandler(error: any, opts: any){
+      responseStatusErrorHandler(error.response, opts);
+    },
+    errorThrower(){
+      console.log('errorThrower');
+    }
+  },
+  // errorHandler : (err) => {console.log("errorHandler", err)},
 
   //请求加拦截器, 除了login接口外, 统一从currentUser中将token带上
   requestInterceptors: [ tokenRequestInterceptor ],
-  // responseInterceptors: [],
 };

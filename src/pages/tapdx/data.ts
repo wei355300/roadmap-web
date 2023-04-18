@@ -6,9 +6,9 @@ export type Role = {
 
 export type Iteration = {
   id: string;
-  name: string;
-  startDate: string;
-  endDate: string;
+  name?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export type Project = {

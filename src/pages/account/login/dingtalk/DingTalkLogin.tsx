@@ -91,7 +91,9 @@ const DingTalkLogin: React.FC = () => {
   // 3. 登录成功转向主页
 
   const buildDingtalkFrame = (metaInfo: DingtalkMetaInfoType) => {
-    const redirectUri = win.location.protocol + "//" + win.location.host + "" + metaInfo.redirectUri;
+    let redirectUri = win.location.protocol + "//" + win.location.host + "" + metaInfo.redirectUri;
+    console.log("metaInfo", metaInfo);
+    // redirectUri = "https://dev-roadmap.petkit.com/api/auth/dingtalk/callback";
     DTFrameLogin(
       {
         id: 'self_defined_element',
@@ -117,7 +119,7 @@ const DingTalkLogin: React.FC = () => {
         console.log('errorMsg', errorMsg);
         // 这里一般需要展示登录失败的具体原因
         // alert(`Login Error---: ${errorMsg}`);
-        notification.warn({
+        notification.error({
           message: `操作错误`,
           description: `${errorMsg}`,
         });
@@ -136,7 +138,7 @@ const DingTalkLogin: React.FC = () => {
       })
       .catch((err: any) => {
         console.log("获取钉钉配置信息失败:", err);
-        notification.warn({
+        notification.error({
           message: `系统错误`,
           description: '获取钉钉配置信息失败',
         });

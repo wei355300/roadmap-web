@@ -6,29 +6,25 @@
  * 通过多项目, 多迭代中负责人的属性进行任务归集展示
  */
 
-import { FC } from 'react';
-// import ColumnComponent from './components/ColumnComponent';
+import { FC, useEffect, useState } from 'react';
+import ColumnComponent from './ColumnComponent';
 import FilterComponent from './FilterComponent';
 // import type { Project } from '../data';
 // import { Card } from 'antd';
 import './styles.less';
-// import type { FilterChangedAction } from './data';
-
-// interface WorkerBoardPropsType {}
-
-// interface WorkerBoardStateType {
-//   query: Project[];
-//   columnComponentUpdatableKey: number;
-// }
+import { Project } from '@/pages/tapdx/data';
 
 const TapdX2: FC = () => {
 
-  // const [query, setQuery] = useState({});
+  const [query, setQuery] = useState<Project[]>([]);
+
+  useEffect(() => {}, []);
 
   return (
     <>
-      <FilterComponent />
-      {/*<ColumnComponent query={query} />*/}
+      <FilterComponent doFilter={(query) => {setQuery(query)}} />
+      {console.log('query', query)}
+      <ColumnComponent query={query} />
     </>
   );
 }
