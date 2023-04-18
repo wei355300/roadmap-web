@@ -108,7 +108,6 @@ const ColumnComponent: FC<{query: Project[]}> = (props) => {
   };
 
   useEffect(() => {
-    console.log('column-query', props.query);
     requestColumnData(props.query)
   }, [props.query]);
 

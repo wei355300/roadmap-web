@@ -18,6 +18,7 @@ export type Project = {
   iterations?: Iteration[]; //按迭代查询
   startDate?: string;
   endDate?: string;
+  status?: string[];
 }
 
 export interface FilterChangedAction {

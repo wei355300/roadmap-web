@@ -9,12 +9,10 @@
 import { FC, useEffect, useState } from 'react';
 import ColumnComponent from './ColumnComponent';
 import FilterComponent from './FilterComponent';
-// import type { Project } from '../data';
-// import { Card } from 'antd';
 import './styles.less';
 import { Project } from '@/pages/tapdx/data';
 
-const TapdX2: FC = () => {
+const TapdX: FC = () => {
 
   const [query, setQuery] = useState<Project[]>([]);
 
@@ -23,9 +21,8 @@ const TapdX2: FC = () => {
   return (
     <>
       <FilterComponent doFilter={(query) => {setQuery(query)}} />
-      {console.log('query', query)}
       <ColumnComponent query={query} />
     </>
   );
 }
-export default TapdX2;
+export default TapdX;
