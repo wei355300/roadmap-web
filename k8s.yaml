@@ -65,36 +65,48 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: roadmap-web-svc
-              servicePort: 40004
+              service:
+                name: roadmap-web-svc
+                port:
+                  number: 40004
             path: /
             pathType: ImplementationSpecific
           - backend:
-              serviceName: roadmap-java-svc
-              servicePort: 40012
+              service:
+                name: roadmap-java-svc
+                port:
+                  number: 40012
             path: /api
             pathType: ImplementationSpecific
           - backend:
-              serviceName: roadmap-java-svc
-              servicePort: 40012
+              service:
+                name: roadmap-java-svc
+                port:
+                  number: 40012
             path: /base
             pathType: ImplementationSpecific
     - host: ${DOMAIN-2}
       http:
         paths:
           - backend:
-              serviceName: roadmap-web-svc
-              servicePort: 40004
+              service:
+                name: roadmap-web-svc
+                port:
+                  number: 40004
             path: /
             pathType: ImplementationSpecific
           - backend:
-              serviceName: roadmap-java-svc
-              servicePort: 40012
+              service:
+                name: roadmap-java-svc
+                port:
+                  number: 40012
             path: /api
             pathType: ImplementationSpecific
           - backend:
-              serviceName: roadmap-java-svc
-              servicePort: 40012
+              service:
+                name: roadmap-java-svc
+                port:
+                  number: 40012
             path: /base
             pathType: ImplementationSpecific
   tls:
