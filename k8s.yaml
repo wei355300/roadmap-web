@@ -37,6 +37,8 @@ kind: Service
 metadata:
   name: roadmap-web-svc
   namespace: default
+  labels:
+    app: roadmap-web-svc
 spec:
   ports:
     - name: port
@@ -49,7 +51,7 @@ spec:
   type: ClusterIP
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
