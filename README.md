@@ -1,12 +1,14 @@
  
-# TODO
+# Plugins
 
-[ ] 升级 umi4
+Gantt
+```text
+https://github.com/MaTeMaTuK/gantt-task-react
+```
 
-[ ] 模块展示异步加载
+# 本地
 
-> 每个站点配置独立到单独的文件中, 异步加载展示 
 
-[ ] 钉钉扫码登录
 
-[ ] TapdX 功能组件化
+# 发布
+

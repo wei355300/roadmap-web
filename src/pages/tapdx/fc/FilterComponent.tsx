@@ -111,27 +111,29 @@ const Conditional: FC<{project: Project, setConditional: (data: Project)=>void}>
   }, [props.project.id]);
 
   return (<>
-    <Cascader
-      style={{ width: 240 }}
-      options={cascadeOptions}
-      multiple={true}
-      onChange={onCascadeChange}
-      notFoundContent={'正在加载数据, 稍等!!!'}
-    >
-      <div>
-        <Button type="link" size={"small"} icon={<InteractionTwoTone />} /> 选择迭代
-        {selectedCascadeOptions.map(o => {
-          return <div key={o.value}>{o.label}</div>
-        })}
-      </div>
-    </Cascader>
-    <div>
+    <Card>
+      <Cascader
+        style={{ width: 240 }}
+        options={cascadeOptions}
+        multiple={true}
+        onChange={onCascadeChange}
+        notFoundContent={'正在加载数据, 稍等!!!'}
+      >
+        <div>
+          <Button type="link" size={"small"} icon={<InteractionTwoTone />} /> 选择迭代
+          {selectedCascadeOptions.map(o => {
+            return <div key={o.value}>{o.label}</div>
+          })}
+        </div>
+      </Cascader>
+    </Card>
+    <Card size={"small"}>
       <Button type="link" size={"small"} icon={<CalendarTwoTone />} /> 选择日期
       <RangePicker onChange={(date: any, dateString: any) => onChangeRangePicker(date, dateString)} />
       <br />
       <Button type="link" size={"small"} icon={<FunnelPlotTwoTone />} /> 选择状态
       <Checkbox.Group options={statusOptions} onChange={onCheckboxChecked} />
-    </div>
+    </Card>
   </>);
 };
 
@@ -222,7 +224,9 @@ const FilterComponent: FC<{doFilter: (query: any) => void}> = (props) => {
               </Button>,
             ]}
           >
-            <Checkbox.Group options={checkboxOptions} onChange={onCheckboxChecked} />
+            <Card>
+              <Checkbox.Group options={checkboxOptions} onChange={onCheckboxChecked} />
+            </Card>
             <Descriptions column={2} bordered>
               {checkedOptions.map((project) => {
                 return <Descriptions.Item label={project.name} key={project.id}>

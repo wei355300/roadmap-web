@@ -33,6 +33,7 @@ export interface WorkerTraceType {
   name: string; //任务名字
   start?: string;
   end?: string;
+  done?: boolean;
 }
 
 export interface TraceDataType {
