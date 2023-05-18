@@ -27,7 +27,6 @@ const Conditional: FC<{project: Project, setConditional: (data: Project)=>void}>
   const [conditionalItem, setConditionalItem] = useState<Project>({id: props.project.id, name: props.project.name});
 
   const onChangeRangePicker: DatePickerProps['onChange'] = (date, dateString) => {
-    console.log('onChangeRangePicker', date, dateString);
 
     let item: Project = {...conditionalItem};
 
@@ -46,7 +45,6 @@ const Conditional: FC<{project: Project, setConditional: (data: Project)=>void}>
   };
 
   const onCheckboxChecked = (checkedValues: CheckboxValueType[]) => {
-    console.log("onCheckboxChecked", checkedValues);
     let item = { ...conditionalItem };
     if (!checkedValues || checkedValues.length === 0) {
       delete item.status;
@@ -59,7 +57,6 @@ const Conditional: FC<{project: Project, setConditional: (data: Project)=>void}>
   };
 
   const onCascadeChange = (value: any[], options: any[][]) => {
-    console.log('onCascadeChange', value, options);
     let item = { ...conditionalItem };
     let selected: CascadeOptionType[] = [];
     if (!options || options.length === 0) {
@@ -165,7 +162,6 @@ const FilterComponent: FC<{doFilter: (query: any) => void}> = (props) => {
   }
 
   const onCheckboxChecked = (checkedValues: CheckboxValueType[]) => {
-    console.log('onCheckboxChecked', checkedValues);
     if (!checkedValues) {
       setCheckedOptions([]);
       setConditionalItems([]);
@@ -190,7 +186,6 @@ const FilterComponent: FC<{doFilter: (query: any) => void}> = (props) => {
   }
 
   const startQuery = () => {
-    console.log('startQuery', conditionalItems);
     const items = [...conditionalItems];
     props.doFilter(items);
   };
