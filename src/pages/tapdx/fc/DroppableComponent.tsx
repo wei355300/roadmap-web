@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import { Card, Badge } from 'antd';
+import { Card, Badge, Space } from 'antd';
 import { Draggable, DroppableProvided } from 'react-beautiful-dnd';
 import { TraceDataType, WorkerTraceType } from '../data';
 
@@ -36,32 +36,35 @@ const DroppableComponent: FC<{droppableProvided: DroppableProvided, traceData: T
   return (
     <div ref={props.droppableProvided.innerRef} {...props.droppableProvided.droppableProps}>
       <Card title={props.traceData.user + '(' + props.traceData.traces.length + ')'} style={{ width: 280 }}>
-        {props.traceData.traces.map((item, index) => (
-          <Draggable
-            key={item.id + '_' + props.traceData.user}
-            draggableId={item.id + '_' + props.traceData.user}
-            index={index}
-          >
-            {(draggableProvided) => (
-              <div
-                ref={draggableProvided.innerRef}
-                {...draggableProvided.draggableProps}
-                {...draggableProvided.dragHandleProps}
-              >
-                <Badge.Ribbon {...getRibbon(item)}>
-                  <Card>
-                    {
-                      <a target="_blank" href={item.link} rel="noreferrer">
-                        {item.name}
-                      </a>
-                    }
-                  </Card>
-                </Badge.Ribbon>
-              </div>
-            )}
-          </Draggable>
-        ))}
-        {props.droppableProvided.placeholder}
+        <Space direction="vertical" size={3}>
+          {props.traceData.traces.map((item, index) => (
+            <Draggable
+              key={item.id + '_' + props.traceData.user}
+              draggableId={item.id + '_' + props.traceData.user}
+              index={index}
+            >
+              {(draggableProvided) => (
+                <div
+                  ref={draggableProvided.innerRef}
+                  {...draggableProvided.draggableProps}
+                  {...draggableProvided.dragHandleProps}
+                >
+                  <Badge.Ribbon {...getRibbon(item)}>
+                    <Card hoverable={true} bodyStyle={item.done ? {backgroundColor: "#f5f5f5"} : {}}>
+                      {
+                        <a target="_blank" href={item.link} style={item.done ? {color: "#c2b8b8"} : {}} rel="noreferrer">
+                          {item.name}
+                        </a>
+                      }
+                    </Card>
+                  </Badge.Ribbon>
+                </div>
+              )}
+            </Draggable>
+          ))}
+          {props.droppableProvided.placeholder}
+        </Space>
+
       </Card>
     </div>
   );
