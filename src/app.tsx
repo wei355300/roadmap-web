@@ -67,7 +67,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }: any) => {
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.account && location.pathname !== loginPath) {
+      if (!initialState?.getAccount() && location.pathname !== loginPath) {
         history.push(loginPath);
       }
     },
@@ -113,7 +113,7 @@ const codeMessage: any = {
 const responseStatusErrorHandler = (response: Response, options: any) => {
 
   if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
+    // const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
 
     // 如果是 401 状态码, 标识登录标识过期, 不弹框提示, 而是直接跳转回登录页面

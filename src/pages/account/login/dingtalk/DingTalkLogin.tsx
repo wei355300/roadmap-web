@@ -11,13 +11,13 @@
  *
  */
 import React, { useEffect } from 'react';
-import {useModel, history} from 'umi';
+import { history, useModel } from 'umi';
 import { LoginForm } from '@ant-design/pro-form';
 import { notification, Typography } from 'antd';
 
-import {queryDingtalkMetaInfo, queryTokenByRedirectUrl} from './service';
-import {saveLocalAccount, updateToken} from '@/pages/account/service';
-import {DingtalkMetaInfoType} from './data';
+import { queryDingtalkMetaInfo, queryTokenByRedirectUrl } from './service';
+import { saveLocalAccount, updateToken } from '@/pages/account/service';
+import { DingtalkMetaInfoType } from './data';
 
 import styles from './index.less';
 
@@ -71,8 +71,7 @@ const DingTalkLogin: React.FC = () => {
         return account;
       })
       .then((account: User.Account) => {
-        const newAccount = updateTokenExpiration(account);
-        return newAccount;
+        return updateTokenExpiration(account);
       })
       .then((account: User.Account) => {
         setInitialState((s) => ({...s, account: account})).then(() => {
