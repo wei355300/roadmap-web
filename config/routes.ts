@@ -10,11 +10,17 @@ export default [
     icon: 'smile',
     component: '@/pages/roadmap',
   },
+  // {
+  //   path: '/tapdx',
+  //   name: 'TAPDX',
+  //   icon: 'smile',
+  //   component: '@/pages/tapdx/fc',
+  // },
   {
-    path: '/tapdx',
-    name: 'TAPDX',
+    path: '/zentao',
+    name: '禅道',
     icon: 'smile',
-    component: '@/pages/tapdx/fc',
+    component: '@/pages/zentao',
   },
   {
     path: '/user',
